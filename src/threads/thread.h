@@ -101,6 +101,9 @@ typedef struct thread {
   int priority;
   int donatedPriority;
 
+  // Nice
+  int nice;
+
   // Tick to wake up on
   int64_t wakeup_tick;
 
@@ -141,10 +144,13 @@ typedef void thread_func(void *aux);
 tid_t thread_create(const char *name, int priority, thread_func *, void *);
 
 void thread_block(void);
+
 void thread_unblock(struct thread *);
 
 struct thread *thread_current(void);
+
 tid_t thread_tid(void);
+
 const char *thread_name(void);
 
 void thread_exit(void) NO_RETURN;
