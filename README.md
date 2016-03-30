@@ -6,9 +6,12 @@ https://github.com/ivogeorg/os-playground/blob/master/pintos-with-qemu.md
 
 # Build
 cd src/threads
+
 make clean
+
 make
 
 # Run Tests
 cd src/threads/build
+
 make check
