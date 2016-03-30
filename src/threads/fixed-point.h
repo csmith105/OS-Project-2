@@ -4,64 +4,68 @@
 
 static int f = (1 << 14);
 
-int ConvFP(float n)
-{
-	return (n * f);	
+int ConvFP(int n) {
+
+	return n * f;
+
 }
 
-int FPtoIntZ(int x)
-{
-	return (x / f);
+int FPtoIntZ(int x) {
+
+	return x / f;
+
 }
 
-int FPtoIntN(int x)
-{
-	if(x >= 0)
-	{
-		return ((x +(f/2))/f); 
-	}
-	else
-	{
-		return ((x-(f/2))/f);
-	}
+int FPtoIntN(int x) {
+
+	return (x >= 0) ? ((x + (f/2)) / f) : ((x - (f/2)) / f);
+
 }
 
-int AddFP(int x, int y)
-{
-	return (x + y);
+int AddFP(int x, int y) {
+
+	return x + y;
+
 }
 
-int SubFP(int x, int y)
-{
-	return (x-y);
+int SubFP(int x, int y) {
+
+	return x- y;
+
 }
 
-int AddFPtoInt(float n, int x)
-{
-	return (x+(n*f));
+int AddFPtoInt(int n, int x) {
+
+	return x + ConvFP(n);
+
 }
 
-int SubFPtoInt(float n, int x)
-{
-	return (x-(n*f));
+int SubFPtoInt(int n, int x) {
+
+	return x - ConvFP(n);
+
 }
 
-int MultFP(int x, int y)
-{
-	return ((((int64_t)x) * y)/f);
+int MultFP(int x, int y) {
+
+	return (((int64_t) x) * y) / f;
+
 }
 
-int MultFPtoInt(int x, float n)
-{
-	return (x * n);
+int MultFPtoInt(int x, float n) {
+
+	return x * n;
+
 }
 
-int DivFP(int x, int y)
-{
-	return ((((int64_t)x)*f)/y);
+int DivFP(int x, int y) {
+
+	return (((int64_t) x) * f) / y;
+
 }
 
-int DivFPtoInt(int x, float n)
-{
-	return (x/n);
+int DivFPtoInt(int x, int n) {
+
+	return x / n;
+
 }
