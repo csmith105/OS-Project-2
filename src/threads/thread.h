@@ -165,6 +165,6 @@ int thread_get_load_avg(void);
 // Additional Project 1 methods
 // ----------------------------
 
-bool compare_ticks(const struct list_elem *a, const struct list_elem *b, void *aux);
+bool compare_wakeup_tick(const struct list_elem *a, const struct list_elem *b, void *aux);
 
 #endif /* threads/thread.h */
