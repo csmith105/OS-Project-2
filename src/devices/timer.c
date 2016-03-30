@@ -100,8 +100,10 @@ void timer_sleep(int64_t ticks) {
   ASSERT(intr_get_level() == INTR_ON);
 
   // Don't bother sleeping on non-positive number of ticks
-  if(ticks <= 0) return;
-
+  if(ticks <= 0) {
+    return;
+  }
+  
   // Disable Interrupts
   intr_disable();
 

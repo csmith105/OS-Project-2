@@ -509,9 +509,13 @@ static void * alloc_frame (struct thread *t, size_t size) {
 static struct thread * next_thread_to_run (void) {
 
   if(list_empty(&ready_list)) {
+
     return idle_thread;
+
   } else {
+
     return list_entry(list_pop_front(&ready_list), struct thread, elem);
+
   }
 
 }
@@ -612,8 +616,8 @@ uint32_t thread_stack_ofs = offsetof(struct thread, stack);
 bool compare_wakeup_tick(const struct list_elem *a, const struct list_elem *b, void *aux) {
 
   // Grab a reference to each thread
-  const Thread * thread_a = list_entry(a, struct thread, elem);
-  const Thread * thread_b = list_entry(b, struct thread, elem);
+  const struct thread * thread_a = list_entry(a, struct thread, elem);
+  const struct thread * thread_b = list_entry(b, struct thread, elem);
 
   // Compare each thread's tick count, return true if 
   return (thread_a->wakeup_tick < thread_b->wakeup_tick);

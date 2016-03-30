@@ -81,7 +81,7 @@ typedef int tid_t;
    ready state is on the run queue, whereas only a thread in the
    blocked state is on a semaphore wait list. */
 
-typedef struct thread {
+struct thread {
 
   // Owned by thread.c
 
@@ -129,7 +129,7 @@ typedef struct thread {
   // Detects stack overflow
   unsigned magic;
 
-} Thread;
+};
 
 /* If false (default), use round-robin scheduler. If true, use multi-level feedback queue scheduler. Controlled by kernel command-line option "-o mlfqs". */
 extern bool thread_mlfqs;
