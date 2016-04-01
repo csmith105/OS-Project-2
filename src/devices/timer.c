@@ -32,8 +32,6 @@ static void real_time_delay(int64_t num, int32_t denom);
 // List of sleeping threads
 static struct list sleeping_threads;
 
-static struct lock timer_sleep_lock;
-
 /* Sets up the timer to interrupt TIMER_FREQ times per second, and registers the corresponding interrupt. */
 void timer_init(void) {
 
@@ -111,7 +109,7 @@ void timer_sleep(int64_t ticks) {
     return;
   }
 
-  lock_acquire(&timer_sleep_lock);
+  enum intr_level old_level = intr_disable();
 
   // Set the current thread's wakeup_tick
   thread_current()->wakeup_tick = ticks + timer_ticks();
@@ -121,7 +119,7 @@ void timer_sleep(int64_t ticks) {
   
   thread_block();
 
-  lock_release(&timer_sleep_lock);
+  intr_set_level(old_level);
 
 }
 
