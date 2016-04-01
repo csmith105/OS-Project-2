@@ -188,9 +188,9 @@ static void timer_interrupt(struct intr_frame *args UNUSED) {
       break;
     }
 
-    thread_unblock(bob);
-
     list_remove(element);
+
+    thread_unblock(bob);
 
     element = list_begin(&sleeping_threads);
 
