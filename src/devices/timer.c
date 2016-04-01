@@ -39,6 +39,8 @@ void timer_init(void) {
 
   intr_register_ext(0x20, timer_interrupt, "8254 Timer");
 
+  list_init(&sleep_list);
+
 }
 
 /* Calibrates loops_per_tick, used to implement brief delays. */
@@ -103,9 +105,9 @@ void timer_sleep(int64_t ticks) {
   if(ticks <= 0) {
     return;
   }
-  
+
   // Disable Interrupts
-  intr_disable();
+  enum intr_level previousStatus = intr_disable();
 
   // Set the current thread's wakeup_tick
   thread_current()->wakeup_tick = timer_ticks() + ticks;
@@ -116,7 +118,7 @@ void timer_sleep(int64_t ticks) {
   thread_block();
 
   // Enable Interrupts
-  intr_set_level(INTR_ON);
+  intr_set_level(previousStatus);
 
 }
 
