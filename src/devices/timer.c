@@ -39,6 +39,7 @@ void timer_init(void) {
 
   intr_register_ext(0x20, timer_interrupt, "8254 Timer");
 
+  // Initialize the sleeping thread list
   list_init(&sleeping_threads);
 
 }
@@ -55,7 +56,7 @@ void timer_calibrate(void) {
   /* Approximate loops_per_tick as the largest power-of-two still less than one timer tick. */
   loops_per_tick = 1u << 10;
 
-  while(!too_many_loops (loops_per_tick << 1)) {
+  while(!too_many_loops(loops_per_tick << 1)) {
 
     loops_per_tick <<= 1;
 
@@ -178,6 +179,24 @@ static void timer_interrupt(struct intr_frame *args UNUSED) {
   ticks++;
 
   thread_tick();
+
+  struct list_elem * element = list_begin(&sleeping_threads);
+
+  while(element != list_end(&sleeping_threads)) {
+
+    struct thread *bob = list_entry(element, struct thread, elem);      
+    
+    if(bob->wakeup_tick < ticks) {
+      
+      list_remove(element);
+
+      thread_unblock(bob);
+
+    }
+
+    element = list_begin(&sleep_list);
+
+  }
 
 }
 

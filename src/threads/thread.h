@@ -168,6 +168,10 @@ void thread_set_nice(int);
 int thread_get_recent_cpu(void);
 int thread_get_load_avg(void);
 
+// Additional Project 1 fields
+// ----------------------------
+
+
 // Additional Project 1 methods
 // ----------------------------
 
