@@ -184,13 +184,13 @@ static void timer_interrupt(struct intr_frame *args UNUSED) {
 
     struct thread *bob = list_entry(element, struct thread, elem);      
     
-    if(bob->wakeup_tick <= ticks) {
-
-      thread_unblock(bob);
-
-      list_remove(element);
-
+    if(ticks < bob->wakeup_tick) {
+      break;
     }
+
+    list_remove(element);
+
+    thread_unblock(bob);
 
     element = list_begin(&sleeping_threads);
 
