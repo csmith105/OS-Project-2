@@ -39,7 +39,7 @@ void timer_init(void) {
 
   intr_register_ext(0x20, timer_interrupt, "8254 Timer");
 
-  list_init(&sleep_list);
+  list_init(&sleeping_threads);
 
 }
 
