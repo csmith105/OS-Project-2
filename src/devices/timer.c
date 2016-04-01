@@ -102,17 +102,14 @@ void timer_sleep(int64_t ticks) {
 
   ASSERT(intr_get_level() == INTR_ON);
 
-  // Don't bother sleeping on non-positive number of ticks
   if(ticks <= 0) {
     return;
   }
 
   enum intr_level old_level = intr_disable();
 
-  // Set the current thread's wakeup_tick
   thread_current()->wakeup_tick = ticks + timer_ticks();
 
-  // Add the thread to the sleeping_threads list
   list_insert_ordered(&sleeping_threads, &thread_current()->elem, (list_less_func *) &compare_wakeup_tick, NULL);
   
   thread_block();
