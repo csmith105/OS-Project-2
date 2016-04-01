@@ -177,4 +177,6 @@ int thread_get_load_avg(void);
 
 bool compare_wakeup_tick(const struct list_elem *a, const struct list_elem *b, void *aux);
 
+void yield_highest_priority();
+
 #endif /* threads/thread.h */
