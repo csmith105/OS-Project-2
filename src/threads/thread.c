@@ -624,6 +624,32 @@ bool compare_wakeup_tick(const struct list_elem *a, const struct list_elem *b, v
 
 }
 
+void yield_highest_priority() {
+
+  if(list_empty(&ready_list)) {
+    return;
+  }
+
+  const struct thread * bob = list_entry(list_front(&ready_list), struct thread, elem);
+
+  if(intr_context()) {
+
+    thread_ticks++;
+    
+    if(thread_current()->priority < bob->priority || (thread_ticks >= TIME_SLICE && thread_current()->priority == bob->priority)) {
+      intr_yield_on_return();
+    }
+
+    return;
+
+  }
+
+  if(thread_current()->priority < bob->priority) {
+    thread_yield();
+  }
+
+}
+
 
 
 

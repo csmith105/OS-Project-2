@@ -42,6 +42,8 @@ void timer_init(void) {
   // Initialize the sleeping thread list
   list_init(&sleeping_threads);
 
+  lock_init(&timer_sleep_lock);
+
 }
 
 /* Calibrates loops_per_tick, used to implement brief delays. */
@@ -94,8 +96,10 @@ int64_t timer_ticks(void) {
 
 /* Returns the number of timer ticks elapsed since THEN, which should be a value once returned by timer_ticks(). */
 int64_t timer_elapsed(int64_t then) {
-  return timer_ticks () - then;
+  return timer_ticks() - then;
 }
+
+static struct lock timer_sleep_lock;
 
 /* Sleeps for approximately TICKS timer ticks. Interrupts must be turned on. */
 void timer_sleep(int64_t ticks) {
@@ -107,19 +111,17 @@ void timer_sleep(int64_t ticks) {
     return;
   }
 
-  // Disable Interrupts
-  enum intr_level previousStatus = intr_disable();
+  lock_acquire(&timer_sleep_lock);
 
   // Set the current thread's wakeup_tick
-  thread_current()->wakeup_tick = timer_ticks() + ticks;
+  thread_current()->wakeup_tick = ticks + timer_ticks();
 
   // Add the thread to the sleeping_threads list
   list_insert_ordered(&sleeping_threads, &thread_current()->elem, (list_less_func *) &compare_wakeup_tick, NULL);
   
   thread_block();
 
-  // Enable Interrupts
-  intr_set_level(previousStatus);
+  lock_release(&timer_sleep_lock);
 
 }
 
@@ -183,20 +185,22 @@ static void timer_interrupt(struct intr_frame *args UNUSED) {
   struct list_elem * element = list_begin(&sleeping_threads);
 
   while(element != list_end(&sleeping_threads)) {
-    
+
     struct thread *bob = list_entry(element, struct thread, elem);      
     
-    if(bob->wakeup_tick < ticks) {
-      
-      list_remove(element);
-      
+    if(bob->wakeup_tick <= ticks) {
+
       thread_unblock(bob);
-      
+
+      list_remove(element);
+
     }
-    
+
     element = list_begin(&sleeping_threads);
-    
+
   }
+
+  yield_highest_priority();
 
 }
 
