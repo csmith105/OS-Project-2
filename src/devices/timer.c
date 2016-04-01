@@ -42,8 +42,6 @@ void timer_init(void) {
   // Initialize the sleeping thread list
   list_init(&sleeping_threads);
 
-  lock_init(&timer_sleep_lock);
-
 }
 
 /* Calibrates loops_per_tick, used to implement brief delays. */
