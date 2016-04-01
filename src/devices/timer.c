@@ -180,7 +180,9 @@ static void timer_interrupt(struct intr_frame *args UNUSED) {
 
   if(!list_empty(&sleeping_threads)) {
 
-    for(struct list_elem *e = list_begin(&sleeping_threads); e != list_end(&sleeping_threads); e = list_next(e)) {
+    struct list_elem *e;
+    
+    for(e = list_begin(&sleeping_threads); e != list_end(&sleeping_threads); e = list_next(e)) {
 
       struct thread *bob = list_entry(e, struct thread, elem);      
       
