@@ -178,18 +178,22 @@ static void timer_interrupt(struct intr_frame *args UNUSED) {
 
   thread_tick();
 
-  for(e = list_begin(&sleeping_threads); e != list_end(&sleeping_threads); e = list_next(e)) {
+  if(!list_empty(&sleeping_threads)) {
 
-    struct thread *bob = list_entry(e, struct thread, elem);      
-    
-    if(bob->wakeup_tick <= ticks) {
+    for(e = list_begin(&sleeping_threads); e != list_end(&sleeping_threads); e = list_next(e)) {
 
-      thread_unblock(bob);
+      struct thread *bob = list_entry(e, struct thread, elem);      
+      
+      if(bob->wakeup_tick <= ticks) {
 
-      list_remove(e);
+        thread_unblock(bob);
 
+        list_remove(e);
+
+      }
+            
     }
-          
+
   }
 
   yield_highest_priority();
