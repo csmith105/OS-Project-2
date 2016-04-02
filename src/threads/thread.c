@@ -200,8 +200,11 @@ tid_t thread_create(const char *name, int priority, thread_func *function, void 
 
   /* Initialize thread. */
   init_thread(t, name, priority);
+
   tid = t->tid = allocate_tid();
+
   t->priorityD.maxDonate = 8;
+
   t->priorityD.curDon = 0;
   // Prepare thread for first run by initializing its stack. Do this atomically so intermediate values for the 'stack' member cannot be observed
 
@@ -226,6 +229,12 @@ tid_t thread_create(const char *name, int priority, thread_func *function, void 
 
   // Add to run queue.
   thread_unblock(t);
+
+  old_level = intr_disable();
+
+  yield_highest_priority();
+
+  intr_set_level(old_level);
 
   return tid;
 
