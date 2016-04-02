@@ -255,23 +255,23 @@ void thread_block(void) {
    it may expect that it can atomically unblock a thread and
    update other data. */
 void thread_unblock(struct thread *t) {
-  
+
   enum intr_level old_level;
-  
+
   ASSERT(is_thread(t));
-  
+
   old_level = intr_disable();
-  
+
   ASSERT(t->status == THREAD_BLOCKED);
-  
+
   //list_push_back(&ready_list, &t->elem);
-  
-  list_insert_ordered(&ready_list, &thread_current()->elem, (list_less_func *) &compare_thread_priority, NULL);
-  
+
+  list_insert_ordered(&ready_list, &t->elem, (list_less_func *) &compare_thread_priority, NULL);
+
   t->status = THREAD_READY;
-  
+
   intr_set_level(old_level);
-  
+
 }
 
 /* Returns the name of the running thread. */
@@ -333,7 +333,11 @@ void thread_yield(void) {
   old_level = intr_disable();
 
   if(cur != idle_thread) {
-    list_push_back(&ready_list, &cur->elem);
+
+    //list_push_back(&ready_list, &cur->elem);
+
+    list_insert_ordered(&ready_list, &cur->elem, (list_less_func *) &compare_thread_priority, NULL);
+  
   }
 
   cur->status = THREAD_READY;
