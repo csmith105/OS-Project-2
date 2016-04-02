@@ -65,7 +65,7 @@ typedef int tid_t;
          large.  If a stack overflows, it will corrupt the thread
          state.  Thus, kernel functions should not allocate large
          structures or arrays as non-static local variables.  Use
-         dynamic allocation with malloc() or palloc_get_page()
+        dynamic allocation with malloc() or palloc_get_page()
          instead.
 
    The first symptom of either of these problems will probably be
@@ -80,6 +80,12 @@ typedef int tid_t;
    only because they are mutually exclusive: only a thread in the
    ready state is on the run queue, whereas only a thread in the
    blocked state is on a semaphore wait list. */
+struct priorityDonation {
+	int maxDonate;
+	int donations[8];
+	int highestDonation;
+	int curDon;
+};
 
 struct thread {
 
@@ -99,13 +105,15 @@ struct thread {
 
   // Priority
   int priority;
-  int donatedPriority;
+  //int donatedPriority;
 
   // Nice
   int nice;
 
   // Tick to wake up on
   int64_t wakeup_tick;
+
+  struct priorityDonation priorityD;
 
   // List element for all threads list
   struct list_elem allelem;
@@ -114,6 +122,7 @@ struct thread {
 
   // List element
   struct list_elem elem;              
+
 
 #ifdef USERPROG
 
@@ -162,6 +171,7 @@ void thread_foreach(thread_action_func *, void *);
 
 int thread_get_priority(void);
 void thread_set_priority(int);
+void thread_donate_priority(int);
 
 int thread_get_nice(void);
 void thread_set_nice(int);

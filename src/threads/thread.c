@@ -201,7 +201,8 @@ tid_t thread_create(const char *name, int priority, thread_func *function, void 
   /* Initialize thread. */
   init_thread(t, name, priority);
   tid = t->tid = allocate_tid();
-
+  t->priorityD.maxDonate = 8;
+  t->priorityD.curDon = 0;
   // Prepare thread for first run by initializing its stack. Do this atomically so intermediate values for the 'stack' member cannot be observed
 
   old_level = intr_disable();
@@ -361,6 +362,7 @@ void thread_foreach(thread_action_func *func, void *aux) {
 // Sets the current thread's priority to NEW_PRIORITY
 void thread_set_priority(int new_priority) {
   thread_current()->priority = new_priority;
+  yield_highest_priority();
 }
 
 // Returns the current thread's priority
@@ -650,7 +652,18 @@ void yield_highest_priority() {
 
 }
 
-
+void thread_donate_priority(int priority)
+{
+	if(thread_current()->priorityD.curDon < thread_current()->priorityD.maxDonate)
+	{
+		thread_current()->priorityD.donations[thread_current()->priorityD.curDon] = priority;
+		++thread_current()->priorityD.curDon;
+		if(thread_current()->priorityD.highestDonation < priority)
+		{
+			thread_current()->priorityD.highestDonation = priority;
+		}
+	}
+}
 
 
 
