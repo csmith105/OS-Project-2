@@ -149,9 +149,9 @@ void thread_tick(void) {
   }
 
   // Enforce preemption
-  if(++thread_ticks >= TIME_SLICE) {
+  /*if(++thread_ticks >= TIME_SLICE) {
     intr_yield_on_return();
-  }
+  }*/
 
 }
 
