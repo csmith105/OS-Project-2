@@ -255,25 +255,27 @@ void thread_block(void) {
    it may expect that it can atomically unblock a thread and
    update other data. */
 void thread_unblock(struct thread *t) {
-
+  
   enum intr_level old_level;
-
-  ASSERT(is_thread (t));
-
+  
+  ASSERT(is_thread(t));
+  
   old_level = intr_disable();
-
+  
   ASSERT(t->status == THREAD_BLOCKED);
-
-  list_push_back(&ready_list, &t->elem);
-
+  
+  //list_push_back(&ready_list, &t->elem);
+  
+  list_insert_ordered(&ready_list, &thread_current()->elem, (list_less_func *) &compare_thread_priority, NULL);
+  
   t->status = THREAD_READY;
-
+  
   intr_set_level(old_level);
-
+  
 }
 
 /* Returns the name of the running thread. */
-const char * thread_name (void) {
+const char * thread_name(void) {
   return thread_current()->name;
 }
 
@@ -494,7 +496,7 @@ static void init_thread(struct thread *t, const char *name, int priority) {
 }
 
 // Allocates a SIZE-byte frame at the top of thread T's stack and returns a pointer to the frame's base
-static void * alloc_frame (struct thread *t, size_t size) {
+static void * alloc_frame(struct thread *t, size_t size) {
 
   // Stack data is always allocated in word-size units
   ASSERT(is_thread (t));
@@ -508,7 +510,7 @@ static void * alloc_frame (struct thread *t, size_t size) {
 
 // Chooses and returns the next thread to be scheduled. Should return a thread from the run queue, unless the run queue is empty. (If the running thread can continue running, then it will be in the run queue.)  If the run queue is empty, return idle_thread
 
-static struct thread * next_thread_to_run (void) {
+static struct thread * next_thread_to_run(void) {
 
   if(list_empty(&ready_list)) {
 
@@ -614,7 +616,7 @@ uint32_t thread_stack_ofs = offsetof(struct thread, stack);
 // Additional Project 1 methods
 // ----------------------------
 
-// Compare method, used by list for sorting Threads
+// Compare method, used by list for sorting Threads based on wakeup_tick
 bool compare_wakeup_tick(const struct list_elem *a, const struct list_elem *b, void *aux) {
 
   // Grab a reference to each thread
@@ -623,6 +625,18 @@ bool compare_wakeup_tick(const struct list_elem *a, const struct list_elem *b, v
 
   // Compare each thread's tick count, return true if 
   return (thread_a->wakeup_tick < thread_b->wakeup_tick);
+
+}
+
+// Compare method, used by list for sorting Threads based on priority
+bool compare_thread_priority(const struct list_elem *a, const struct list_elem *b, void *aux) {
+
+  // Grab a reference to each thread
+  const struct thread * thread_a = list_entry(a, struct thread, elem);
+  const struct thread * thread_b = list_entry(b, struct thread, elem);
+
+  // Compare each thread's tick count, return true if 
+  return (thread_a->priority < thread_b->priority);
 
 }
 
