@@ -368,12 +368,18 @@ void thread_foreach(thread_action_func *func, void *aux) {
 // Sets the current thread's priority to NEW_PRIORITY
 void thread_set_priority(int new_priority) {
 
+  enum intr_level old_level = intr_disable();
+
+  int old_priority = thread_current()->priority;
+
   thread_current()->priority = new_priority;
 
   // Resort ready list
   list_sort(&ready_list, &compare_thread_priority, NULL);
 
   yield_highest_priority();
+
+  intr_set_level(old_level);
 
 }
 
