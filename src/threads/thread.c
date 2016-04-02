@@ -371,7 +371,7 @@ void thread_set_priority(int new_priority) {
   thread_current()->priority = new_priority;
 
   // Resort ready list
-  list_sort(&ready_list, &compare_thread_priority, null);
+  list_sort(&ready_list, &compare_thread_priority, NULL);
 
   yield_highest_priority();
 
@@ -671,22 +671,29 @@ void yield_highest_priority() {
   }
 
   if(thread_current()->priority < bob->priority) {
+
     thread_yield();
+
   }
 
 }
 
-void thread_donate_priority(int priority)
-{
-	if(thread_current()->priorityD.curDon < thread_current()->priorityD.maxDonate)
-	{
+void thread_donate_priority(int priority) {
+
+	if(thread_current()->priorityD.curDon < thread_current()->priorityD.maxDonate) {
+
 		thread_current()->priorityD.donations[thread_current()->priorityD.curDon] = priority;
+
 		++thread_current()->priorityD.curDon;
-		if(thread_current()->priorityD.highestDonation < priority)
-		{
+
+		if(thread_current()->priorityD.highestDonation < priority) {
+
 			thread_current()->priorityD.highestDonation = priority;
+
 		}
+
 	}
+
 }
 
 
