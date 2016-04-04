@@ -80,12 +80,6 @@ typedef int tid_t;
    only because they are mutually exclusive: only a thread in the
    ready state is on the run queue, whereas only a thread in the
    blocked state is on a semaphore wait list. */
-struct priorityDonation {
-	int maxDonate;
-	int donations[8];
-	int highestDonation;
-	int curDon;
-};
 
 struct thread {
 
@@ -106,14 +100,14 @@ struct thread {
   // Priority
   int priority;
   //int donatedPriority;
-
+  int priDon[8];
+  //How many donations
+  unsigned numDon;
   // Nice
   int nice;
 
   // Tick to wake up on
   int64_t wakeup_tick;
-
-  struct priorityDonation priorityD;
 
   // List element for all threads list
   struct list_elem allelem;
@@ -172,6 +166,7 @@ void thread_foreach(thread_action_func *, void *);
 int thread_get_priority(void);
 void thread_set_priority(int);
 void thread_donate_priority(int);
+void thread_set_highest_donate(struct thread *t);
 
 int thread_get_nice(void);
 void thread_set_nice(int);
