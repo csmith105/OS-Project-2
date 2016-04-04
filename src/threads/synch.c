@@ -70,7 +70,8 @@ void sema_down(struct semaphore *sema) {
   while(sema->value == 0) {
 
     list_push_back(&sema->waiters, &thread_current()->elem);
-//	list_insert_ordered(&sema->waiters, &thread_current()->elem, (list_less_func *) &compare_thread_priority, NULL);
+
+    //list_insert_ordered(&sema->waiters, &thread_current()->elem, (list_less_func *) &compare_thread_priority, NULL);
 
     thread_block();
 
@@ -179,13 +180,13 @@ static void sema_test_helper(void *sema_) {
 
 }
 
-void donation(struct lock *lock)
-{
+void donation(struct lock *lock) {
+
 	ASSERT(lock != NULL);
 	ASSERT(!intr_context());
 	ASSERT(!lock_held_by_current_thread(lock));
-	if(lock->holder == NULL)
-	{
+
+	if(lock->holder == NULL) {
 		return;
 	}
 
@@ -193,12 +194,12 @@ void donation(struct lock *lock)
 
 	struct thread *weenie = lock->holder;
 
-	if(weenie->priority < thread_current()->priority)
+	/*if(weenie->priority < thread_current()->priority)
 	{
 		weenie->priDon[weenie->numDon] = thread_current()->priority;
 		weenie->priority = weenie->priDon[weenie->numDon];
 		++weenie->numDon;
-	}
+	}*/
 
 	intr_set_level(old_level);
 }
