@@ -194,12 +194,15 @@ void donation(struct lock *lock) {
 
 	struct thread *weenie = lock->holder;
 
-	/*if(weenie->priority < thread_current()->priority)
-	{
-		weenie->priDon[weenie->numDon] = thread_current()->priority;
-		weenie->priority = weenie->priDon[weenie->numDon];
+	if(weenie->priority < thread_current()->priority) {
+
+		weenie->priDon[weenie->numDon++] = thread_current()->priority;
+
+		//weenie->priority = weenie->priDon[weenie->numDon];
+
 		++weenie->numDon;
-	}*/
+
+	}
 
 	intr_set_level(old_level);
 }
