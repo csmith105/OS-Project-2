@@ -97,15 +97,13 @@ struct thread {
   // Saved stack pointer        
   uint8_t *stack;
 
+  int init_priority;
   // Priority
   int priority;
-
   //int donatedPriority;
   int priDon[8];
-
   //How many donations
   unsigned numDon;
-  
   // Nice
   int nice;
 

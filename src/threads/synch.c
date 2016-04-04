@@ -69,14 +69,8 @@ void sema_down(struct semaphore *sema) {
 
   while(sema->value == 0) {
 
-<<<<<<< HEAD
    // list_push_back(&sema->waiters, &thread_current()->elem);
 	list_insert_ordered(&sema->waiters, &thread_current()->elem, (list_less_func *) &compare_thread_priority, NULL);
-=======
-    list_push_back(&sema->waiters, &thread_current()->elem);
-
-    //list_insert_ordered(&sema->waiters, &thread_current()->elem, (list_less_func *) &compare_thread_priority, NULL);
->>>>>>> a89f1bffbf87498da0d8ed4dada7678a78704fc6
 
     thread_block();
 
@@ -185,13 +179,13 @@ static void sema_test_helper(void *sema_) {
 
 }
 
-void donation(struct lock *lock) {
-
+void donation(struct lock *lock)
+{
 	ASSERT(lock != NULL);
 	ASSERT(!intr_context());
 	ASSERT(!lock_held_by_current_thread(lock));
-
-	if(lock->holder == NULL) {
+	if(lock->holder == NULL)
+	{
 		return;
 	}
 
@@ -199,18 +193,14 @@ void donation(struct lock *lock) {
 
 	struct thread *weenie = lock->holder;
 
-	if(weenie->priority < thread_current()->priority && weenie->numDon < 7) {
-
+	if(weenie->priority < thread_current()->priority)
+	{
 		weenie->priDon[weenie->numDon] = thread_current()->priority;
-
-		//weenie->priority = weenie->priDon[weenie->numDon];
-
-		++(weenie->numDon);
-
+		weenie->priority = weenie->priDon[weenie->numDon];
+		++weenie->numDon;
 	}
 
 	intr_set_level(old_level);
-  
 }
 /* Initializes LOCK.  A lock can be held by at most a single
    thread at any given time.  Our locks are not "recursive", that
@@ -298,10 +288,16 @@ void lock_release(struct lock *lock) {
   ASSERT(lock != NULL);
   ASSERT(lock_held_by_current_thread(lock));
 
+  enum intr_level old_level = intr_disable();
+  if(thread_current()->priority != thread_current()->init_priority)
+  {
+		thread_current()->priority = thread_current()->init_priority;
+  }
   lock->holder = NULL;
-
+  intr_set_level(old_level);
   sema_up(&lock->semaphore);
 
+  yield_highest_priority();
 }
 
 /* Returns true if the current thread holds LOCK, false
