@@ -99,10 +99,13 @@ struct thread {
 
   // Priority
   int priority;
+
   //int donatedPriority;
   int priDon[8];
+
   //How many donations
   unsigned numDon;
+  
   // Nice
   int nice;
 
