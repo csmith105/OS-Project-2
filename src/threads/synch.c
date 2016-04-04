@@ -194,17 +194,18 @@ void donation(struct lock *lock) {
 
 	struct thread *weenie = lock->holder;
 
-	if(weenie->priority < thread_current()->priority) {
+	if(weenie->priority < thread_current()->priority && weenie->numDon < 7) {
 
-		weenie->priDon[weenie->numDon++] = thread_current()->priority;
+		weenie->priDon[weenie->numDon] = thread_current()->priority;
 
 		//weenie->priority = weenie->priDon[weenie->numDon];
 
-		++weenie->numDon;
+		++(weenie->numDon);
 
 	}
 
 	intr_set_level(old_level);
+  
 }
 /* Initializes LOCK.  A lock can be held by at most a single
    thread at any given time.  Our locks are not "recursive", that
