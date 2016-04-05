@@ -204,6 +204,7 @@ tid_t thread_create(const char *name, int priority, thread_func *function, void 
   tid = t->tid = allocate_tid();
 
   t->numDon = 0;
+  t->priDon[0] = -1;
   // Prepare thread for first run by initializing its stack. Do this atomically so intermediate values for the 'stack' member cannot be observed
 
   old_level = intr_disable();

@@ -197,7 +197,20 @@ void donation(struct lock *lock)
 	{
 		weenie->priDon[weenie->numDon] = thread_current()->priority;
 		weenie->priority = weenie->priDon[weenie->numDon];
-		++weenie->numDon;
+		++(weenie->numDon);
+	}
+	for(int i = 0; i < weenie->numDon; ++i)
+	{
+		for(int j = weenie->numDon-1; j > i; --j)
+		{
+			int pri = 0;
+			if(weenie->priDon[j-1] < weenie->priDon[j])
+			{
+				pri = weenie->priDon[j-1];
+				weenie->priDon[j-1] = weenie->priDon[j];
+				weenie->priDon[j]=pri;
+			}
+		}
 	}
 
 	intr_set_level(old_level);
@@ -291,7 +304,24 @@ void lock_release(struct lock *lock) {
   enum intr_level old_level = intr_disable();
   if(thread_current()->priority != thread_current()->init_priority)
   {
-		thread_current()->priority = thread_current()->init_priority;
+		if(thread_current()->numDon > 0)
+		{
+			thread_current()->priority = thread_current()->priDon[1];
+			for(int i = 0; i < thread_current()->numDon; ++i)
+			{
+				thread_current()->priDon[i] = thread_current()->priDon[i+1];	
+			}
+			thread_current()->numDon-=1;
+		}
+		else if(thread_current()->numDon == 0 && thread_current()->priDon[0] != -1)
+		{
+			thread_current()->priority = thread_current()->priDon[0];
+			thread_current()->priDon[0]=-1;
+		}
+		else
+		{
+			thread_current()->priority = thread_current()->init_priority;
+  		}
   }
   lock->holder = NULL;
   intr_set_level(old_level);
