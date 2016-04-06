@@ -201,7 +201,8 @@ void donation(struct lock *lock)
 	}
 	for(int i = 0; i < weenie->numDon; ++i)
 	{
-		for(int j = weenie->numDon-1; j > i; --j)
+    int j;
+		for(j = weenie->numDon-1; j > i; --j)
 		{
 			int pri = 0;
 			if(weenie->priDon[j-1] < weenie->priDon[j])
