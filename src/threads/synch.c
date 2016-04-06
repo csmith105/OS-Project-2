@@ -199,7 +199,9 @@ void donation(struct lock *lock)
 		weenie->priority = weenie->priDon[weenie->numDon];
 		++(weenie->numDon);
 	}
-	for(int i = 0; i < weenie->numDon; ++i)
+
+  int i;
+	for(i = 0; i < weenie->numDon; ++i)
 	{
     int j;
 		for(j = weenie->numDon-1; j > i; --j)
