@@ -203,29 +203,12 @@ tid_t thread_create(const char *name, int priority, thread_func *function, void 
 
   tid = t->tid = allocate_tid();
 
-  t->priDon[0].priority = PRI_MIN;
-  t->priDon[0].holder = NULL;
+  for(i = 0; i < 8; ++i) {
 
-  t->priDon[1].priority = PRI_MIN;
-  t->priDon[1].holder = NULL;
+    t->priDon[i].priority = PRI_MIN;
+    t->priDon[i].holder = NULL;
 
-  t->priDon[2].priority = PRI_MIN;
-  t->priDon[2].holder = NULL;
-
-  t->priDon[3].priority = PRI_MIN;
-  t->priDon[3].holder = NULL;
-
-  t->priDon[4].priority = PRI_MIN;
-  t->priDon[4].holder = NULL;
-
-  t->priDon[5].priority = PRI_MIN;
-  t->priDon[5].holder = NULL;
-
-  t->priDon[6].priority = PRI_MIN;
-  t->priDon[6].holder = NULL;
-
-  t->priDon[7].priority = PRI_MIN;
-  t->priDon[7].holder = NULL;
+  }
 
   // Prepare thread for first run by initializing its stack. Do this atomically so intermediate values for the 'stack' member cannot be observed
 
@@ -720,6 +703,7 @@ void recalculate_priority(struct thread * foo) {
 
   int highest = PRI_MIN;
 
+  // Check donated priorities
   for(i = 0; i < 8; ++i) {
 
     if(foo->priDon[i].priority > highest) {
@@ -728,7 +712,15 @@ void recalculate_priority(struct thread * foo) {
 
   }
 
+  // Check initial priority
+  if(foo->init_priority > highest) {
+    highest = foo->init_priority;
+  }
+
+  // Did the priority change?
   if(foo->priority != highest) {
+
+    // It did, change and resort...
 
     // Set the new priority
     foo->priority = highest;
