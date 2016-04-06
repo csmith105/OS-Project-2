@@ -203,6 +203,7 @@ tid_t thread_create(const char *name, int priority, thread_func *function, void 
 
   tid = t->tid = allocate_tid();
 
+  int i;
   for(i = 0; i < 8; ++i) {
 
     t->priDon[i].priority = PRI_MIN;
