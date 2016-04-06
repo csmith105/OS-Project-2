@@ -186,7 +186,7 @@ void donation(struct lock * lock) {
 	ASSERT(!lock_held_by_current_thread(lock));
 
 	if(lock->holder == NULL) {
-    msg("ERROR: No lock holder in donate()");
+    //msg("ERROR: No lock holder in donate()");
 		return;
 	}
 
