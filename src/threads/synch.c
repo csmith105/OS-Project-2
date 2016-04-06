@@ -198,11 +198,18 @@ void donation(struct lock * lock) {
     // We need to donate
 
     // Add the new donation record
-		weenie->priDon[weenie->numDon].priority = thread_current()->priority;
-    weenie->priDon[weenie->numDon].holder = lock;
+    for(i = 0; i < 8; ++i) {
 
-    // Increment the donation records count
-		++(weenie->numDon);
+      if(weenie->priDon[i].holder == NULL) {
+
+        weenie->priDon[i].priority = thread_current()->priority;
+        weenie->priDon[i].holder = lock;
+
+        break;
+
+      }
+
+    }
 
     // Recalculate priority
     recalculate_priority(weenie);
@@ -369,7 +376,7 @@ void lock_release(struct lock *lock) {
   sema_up(&lock->semaphore);
 
   yield_highest_priority();
-  
+
 }
 
 /* Returns true if the current thread holds LOCK, false
