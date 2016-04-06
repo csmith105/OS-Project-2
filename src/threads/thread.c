@@ -515,6 +515,9 @@ static void init_thread(struct thread *t, const char *name, int priority) {
   t->init_priority = priority;
   t->magic = THREAD_MAGIC;
 
+  // Initialize donation list
+  list_init(&donation_list);
+
   list_push_back(&all_list, &t->allelem);
 
 }
@@ -691,6 +694,33 @@ void yield_highest_priority() {
   }
 
 }
+
+void recalculate_priority(struct thread * foo) {
+
+  int i;
+
+  int highest = PRI_MIN;
+
+  for(i = 0; i < foo->numDon; ++i) {
+
+    if(foo->priDon[i].priority > highest) {
+      highest = foo->priDon[i].priority;
+    }
+
+  }
+
+  if(foo->priority != highest) {
+
+    // Set the new priority
+    foo->priority = highest;
+
+    // Resort the ready list since the priority changed
+    list_sort(&ready_list, &compare_thread_priority, NULL);
+
+  }
+
+}
+
 /*
 void thread_donate_priority(int priority) {
 

@@ -179,13 +179,13 @@ static void sema_test_helper(void *sema_) {
 
 }
 
-void donation(struct lock *lock)
-{
+void donation(struct lock * lock) {
+
 	ASSERT(lock != NULL);
 	ASSERT(!intr_context());
 	ASSERT(!lock_held_by_current_thread(lock));
-	if(lock->holder == NULL)
-	{
+
+	if(lock->holder == NULL) {
 		return;
 	}
 
@@ -193,14 +193,23 @@ void donation(struct lock *lock)
 
 	struct thread *weenie = lock->holder;
 
-	if(weenie->priority < thread_current()->priority)
-	{
-		weenie->priDon[weenie->numDon] = thread_current()->priority;
-		weenie->priority = weenie->priDon[weenie->numDon];
+	if(weenie->priority < thread_current()->priority) {
+
+    // We need to donate
+
+    // Add the new donation record
+		weenie->priDon[weenie->numDon].priority = thread_current()->priority;
+    weenie->priDon[weenie->numDon].holder = lock;
+
+    // Increment the donation records count
 		++(weenie->numDon);
+
+    // Recalculate priority
+    recalculate_priority(weenie);
+
 	}
 
-  int i;
+  /*int i;
 	for(i = 0; i < weenie->numDon; ++i)
 	{
     int j;
@@ -214,10 +223,12 @@ void donation(struct lock *lock)
 				weenie->priDon[j]=pri;
 			}
 		}
-	}
+	}*/
 
 	intr_set_level(old_level);
+
 }
+
 /* Initializes LOCK.  A lock can be held by at most a single
    thread at any given time.  Our locks are not "recursive", that
    is, it is an error for the thread currently holding a lock to
@@ -256,7 +267,9 @@ void lock_acquire(struct lock *lock) {
   ASSERT(lock != NULL);
   ASSERT(!intr_context());
   ASSERT(!lock_held_by_current_thread(lock));
+
   donation(lock);
+
   /*if(lock->holder != NULL)
   {
   	if(lock->holder->priority < thread_current()->priority)
@@ -265,6 +278,7 @@ void lock_acquire(struct lock *lock) {
 		thread_set_highest_donate(&lock->holder);
   	}
   }*/
+
   sema_down(&lock->semaphore);
 
   lock->holder = thread_current();
@@ -305,17 +319,37 @@ void lock_release(struct lock *lock) {
   ASSERT(lock_held_by_current_thread(lock));
 
   enum intr_level old_level = intr_disable();
-  if(thread_current()->priority != thread_current()->init_priority)
-  {
-		if(thread_current()->numDon > 0)
-		{
+
+  struct thread * foo = thread_current();
+
+  int i;
+
+  for(i = 0; i < foo->numDon; ++i) {
+
+    if(foo->priDon[i].holder == lock) {
+
+      // Must remove record
+      foo->priDon[i].holder = NULL;
+      foo->priDon[i].priority = PRI_MIN;
+
+      // Recalculate foo's priority
+      recalculate_priority(foo);
+
+    }
+
+  }
+
+  /*if(thread_current()->priority != thread_current()->init_priority) {
+
+		if(thread_current()->numDon > 0) {
+
 			thread_current()->priority = thread_current()->priDon[1];
 
       int i;
-			for(i = 0; i < thread_current()->numDon; ++i)
-			{
+			for(i = 0; i < thread_current()->numDon; ++i) {
 				thread_current()->priDon[i] = thread_current()->priDon[i+1];	
 			}
+
 			thread_current()->numDon-=1;
 		}
 		else if(thread_current()->numDon == 0 && thread_current()->priDon[0] != -1)
@@ -326,13 +360,16 @@ void lock_release(struct lock *lock) {
 		else
 		{
 			thread_current()->priority = thread_current()->init_priority;
-  		}
-  }
+  	}
+
+  }*/
+
   lock->holder = NULL;
   intr_set_level(old_level);
   sema_up(&lock->semaphore);
 
   yield_highest_priority();
+  
 }
 
 /* Returns true if the current thread holds LOCK, false

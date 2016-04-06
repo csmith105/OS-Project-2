@@ -30,6 +30,9 @@ struct lock {
   // Binary semaphore controlling access
   struct semaphore semaphore;
 
+  // List element
+  struct list_elem elem;
+
 };
 
 void lock_init(struct lock *);
