@@ -331,7 +331,7 @@ void lock_release(struct lock *lock) {
 
   int i;
 
-  for(i = 0; i < foo->numDon; ++i) {
+  for(i = 0; i < 8; ++i) {
 
     if(foo->priDon[i].holder == lock) {
 
