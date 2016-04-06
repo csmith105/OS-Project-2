@@ -209,7 +209,7 @@ tid_t thread_create(const char *name, int priority, thread_func *function, void 
     t->priDon[i].priority = PRI_MIN;
     t->priDon[i].lock = NULL;
     t->priDon[i].thread = NULL;
-    
+
   }
 
   // Prepare thread for first run by initializing its stack. Do this atomically so intermediate values for the 'stack' member cannot be observed
@@ -701,6 +701,8 @@ void yield_highest_priority() {
 
 void recalculate_priority(struct thread * foo) {
 
+  enum intr_level old_level = intr_disable();
+
   int i;
 
   int highest = PRI_MIN;
@@ -758,6 +760,8 @@ void recalculate_priority(struct thread * foo) {
     }
 
   }
+
+  intr_set_level(old_level);
 
 }
 
