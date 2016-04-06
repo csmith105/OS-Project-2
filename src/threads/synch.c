@@ -186,6 +186,7 @@ void donation(struct lock * lock) {
 	ASSERT(!lock_held_by_current_thread(lock));
 
 	if(lock->holder == NULL) {
+    msg("ERROR: No lock holder in donate()");
 		return;
 	}
 
@@ -198,6 +199,7 @@ void donation(struct lock * lock) {
     // We need to donate
 
     // Add the new donation record
+    bool found = false;
     int i;
     for(i = 0; i < 8; ++i) {
 
@@ -206,10 +208,16 @@ void donation(struct lock * lock) {
         weenie->priDon[i].priority = thread_current()->priority;
         weenie->priDon[i].holder = lock;
 
+        found = true;
+
         break;
 
       }
 
+    }
+
+    if(!found) {
+      msg("No slot available in donate()");
     }
 
     // Recalculate priority
