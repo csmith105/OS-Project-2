@@ -515,9 +515,6 @@ static void init_thread(struct thread *t, const char *name, int priority) {
   t->init_priority = priority;
   t->magic = THREAD_MAGIC;
 
-  // Initialize donation list
-  list_init(&donation_list);
-
   list_push_back(&all_list, &t->allelem);
 
 }
@@ -701,7 +698,7 @@ void recalculate_priority(struct thread * foo) {
 
   int highest = PRI_MIN;
 
-  for(i = 0; i < foo->numDon; ++i) {
+  for(i = 0; i < 8; ++i) {
 
     if(foo->priDon[i].priority > highest) {
       highest = foo->priDon[i].priority;
