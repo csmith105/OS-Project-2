@@ -186,7 +186,9 @@ void donation(struct lock * lock) {
 	ASSERT(!lock_held_by_current_thread(lock));
 
 	if(lock->holder == NULL) {
-    //msg("ERROR: No lock holder in donate()");
+    //
+
+    msg("ERROR: No lock holder in donate()");
 		return;
 	}
 
@@ -204,6 +206,8 @@ void donation(struct lock * lock) {
     for(i = 0; i < 8; ++i) {
 
       if(weenie->priDon[i].holder == NULL) {
+
+        printf("Donating %d from %s to %s\r\n", thread_current()->priority, thread_current()->name, weenie->priDon[i].holder->name);
 
         weenie->priDon[i].priority = thread_current()->priority;
         weenie->priDon[i].holder = lock;
