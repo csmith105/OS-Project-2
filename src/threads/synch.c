@@ -198,6 +198,7 @@ void donation(struct lock * lock) {
     // We need to donate
 
     // Add the new donation record
+    int i;
     for(i = 0; i < 8; ++i) {
 
       if(weenie->priDon[i].holder == NULL) {
