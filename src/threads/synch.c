@@ -307,7 +307,9 @@ void lock_release(struct lock *lock) {
 		if(thread_current()->numDon > 0)
 		{
 			thread_current()->priority = thread_current()->priDon[1];
-			for(int i = 0; i < thread_current()->numDon; ++i)
+
+      int i;
+			for(i = 0; i < thread_current()->numDon; ++i)
 			{
 				thread_current()->priDon[i] = thread_current()->priDon[i+1];	
 			}
