@@ -744,13 +744,13 @@ void recalculate_priority(struct thread * foo) {
       // Check donated priorities
       for(i = 0; i < 8; ++i) {
 
-        printf("Comparing %p to %p");
+        printf("Comparing %p to %p\r\n");
         if(bar->priDon[i].thread == foo) {
-          
+
           printf("Altering donated priority of %s from %d to %d\r\n", bar->name, bar->priDon[i].priority, foo->priority);
-          
+
           bar->priDon[i].priority = foo->priority;
-          
+
           // Recursively call recalculate on the thread which we just altered
           recalculate_priority(bar);
           
