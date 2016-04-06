@@ -85,7 +85,9 @@ struct donation {
 
   int priority;
 
-  struct lock * holder;
+  struct lock * lock;
+
+  struct thread * thread;
 
 };
 

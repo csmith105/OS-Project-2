@@ -202,12 +202,13 @@ void donation(struct lock * lock) {
     int i;
     for(i = 0; i < 8; ++i) {
 
-      if(weenie->priDon[i].holder == NULL) {
+      if(weenie->priDon[i].lock == NULL) {
 
         printf("Donating %d from %s to %s\r\n", thread_current()->priority, thread_current()->name, weenie->name);
 
         weenie->priDon[i].priority = thread_current()->priority;
-        weenie->priDon[i].holder = lock;
+        weenie->priDon[i].lock = lock;
+        weenie->priDon[i].thread = thread_current();
 
         found = true;
 
@@ -343,10 +344,11 @@ void lock_release(struct lock *lock) {
 
   for(i = 0; i < 8; ++i) {
 
-    if(foo->priDon[i].holder == lock) {
+    if(foo->priDon[i].lock == lock) {
 
       // Must remove record
-      foo->priDon[i].holder = NULL;
+      foo->priDon[i].lock = NULL;
+      foo->priDon[i].thread = NULL;
       foo->priDon[i].priority = PRI_MIN;
 
       // Recalculate foo's priority

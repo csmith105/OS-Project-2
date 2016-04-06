@@ -207,8 +207,8 @@ tid_t thread_create(const char *name, int priority, thread_func *function, void 
   for(i = 0; i < 8; ++i) {
 
     t->priDon[i].priority = PRI_MIN;
-    t->priDon[i].holder = NULL;
-
+    t->priDon[i].lock = NULL;
+    t->priDon[i].thread = NULL;
   }
 
   // Prepare thread for first run by initializing its stack. Do this atomically so intermediate values for the 'stack' member cannot be observed
@@ -728,6 +728,33 @@ void recalculate_priority(struct thread * foo) {
 
     // Resort the ready list since the priority changed
     list_sort(&ready_list, &compare_thread_priority, NULL);
+
+    // Propegate the change to all donations
+    struct list_elem *e;
+
+    for(e = list_begin(&ready_list); e != list_end(&ready_list); e = list_next(e)) {
+
+      struct thread * bar = list_entry(e, struct thread, elem);
+
+      // Check donated priorities
+      for(i = 0; i < 8; ++i) {
+
+        if(bar->priDon[i].thread == thread_current()) {
+
+          bar->priDon[i].priority = foo->priority;
+
+          // Recursively call recalculate on the thread which we just altered
+          recalculate_priority(bar);
+          
+        }
+
+      }
+
+
+
+
+      
+    }
 
   }
 
