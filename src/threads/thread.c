@@ -744,7 +744,7 @@ void recalculate_priority(struct thread * foo) {
       // Check donated priorities
       for(i = 0; i < 8; ++i) {
 
-        if(bar->priDon[i].thread == foo {
+        if(bar->priDon[i].thread == foo) {
 
           printf("Altering donated priority of %s from %d to %d\r\n", bar->name, bar->priDon[i].priority, foo->priority);
 
