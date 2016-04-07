@@ -726,7 +726,7 @@ void recalculate_priority(struct thread * foo) {
 
     // It did, change and resort...
 
-    printf("Thread %s's priority has changed from %d to %d\r\n", foo->name, foo->priority, highest);
+    //printf("Thread %s's priority has changed from %d to %d\r\n", foo->name, foo->priority, highest);
 
     // Set the new priority
     foo->priority = highest;
@@ -738,25 +738,25 @@ void recalculate_priority(struct thread * foo) {
     struct list_elem *e;
 
     for(e = list_begin(&all_list); e != list_end(&all_list); e = list_next(e)) {
-      
+
       struct thread * bar = list_entry(e, struct thread, allelem);
-      
+
       // Check donated priorities
       for(i = 0; i < 8; ++i) {
-        
-        printf("Comparing (%p) to (%p %d)\r\n", foo, bar->priDon[i].thread, bar->priDon[i].priority);
-        
+
+        //printf("Comparing (%p) to (%p %d)\r\n", foo, bar->priDon[i].thread, bar->priDon[i].priority);
+
         if(bar->priDon[i].thread == foo) {
-          
-          printf("Altering donated priority of %s from %d to %d\r\n", bar->name, bar->priDon[i].priority, foo->priority);
-          
+
+          //printf("Altering donated priority of %s from %d to %d\r\n", bar->name, bar->priDon[i].priority, foo->priority);
+
           bar->priDon[i].priority = foo->priority;
-          
+
           // Recursively call recalculate on the thread which we just altered
           recalculate_priority(bar);
           
         }
-        
+
       }
 
 
