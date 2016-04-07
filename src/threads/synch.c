@@ -210,6 +210,8 @@ void donation(struct lock * lock) {
         weenie->priDon[i].lock = lock;
         weenie->priDon[i].thread = thread_current();
 
+        printf("%p\r\n", weenie->priDon[i].thread);
+
         found = true;
 
         break;
