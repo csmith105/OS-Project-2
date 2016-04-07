@@ -204,13 +204,11 @@ void donation(struct lock * lock) {
 
       if(weenie->priDon[i].lock == NULL) {
 
-        printf("Donating %d from %s to %s\r\n", thread_current()->priority, thread_current()->name, weenie->name);
+        //printf("Donating %d from %s to %s\r\n", thread_current()->priority, thread_current()->name, weenie->name);
 
         weenie->priDon[i].priority = thread_current()->priority;
         weenie->priDon[i].lock = lock;
         weenie->priDon[i].thread = thread_current();
-
-        printf("%p\r\n", weenie->priDon[i].thread);
 
         found = true;
 
