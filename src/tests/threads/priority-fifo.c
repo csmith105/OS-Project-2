@@ -76,7 +76,11 @@ void test_priority_fifo(void) {
 
   }
 
+  // Added
+  printf("Thread %s: Changing priority...\r\n", thread_current()->name);
   thread_set_priority(PRI_DEFAULT);
+  // Added
+  printf("Thread %s: Priority changed.\r\n", thread_current()->name);
 
   /* All the other threads now run to termination here. */
   ASSERT(lock.holder == NULL);
