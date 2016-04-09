@@ -746,7 +746,6 @@ void recalculate_priority(struct thread * foo) {
 
     for(e = list_begin(&all_list); e != list_end(&all_list); e = list_next(e)) {
 
-      printf("Boop\r\n");
       struct thread * bar = list_entry(e, struct thread, allelem);
 
       // Check donated priorities
@@ -770,6 +769,8 @@ void recalculate_priority(struct thread * foo) {
     }
 
   }
+
+  printf("Boop\r\n");
 
   intr_set_level(old_level);
 
