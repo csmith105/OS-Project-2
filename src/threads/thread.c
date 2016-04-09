@@ -389,7 +389,7 @@ void thread_set_priority(int new_priority) {
 
   thread_current()->init_priority = new_priority;
 
-  recalculate_priority();
+  recalculate_priority(thread_current());
 
   yield_highest_priority();
 
