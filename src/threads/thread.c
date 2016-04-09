@@ -385,7 +385,7 @@ void thread_set_priority(int new_priority) {
 
   msg("beep0");
   enum intr_level old_level = intr_disable();
-
+  msg("beep0.1");
   //int old_priority = thread_current()->priority;
 
   thread_current()->init_priority = new_priority;
