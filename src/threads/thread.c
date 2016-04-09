@@ -388,13 +388,13 @@ void thread_set_priority(int new_priority) {
   printf("beep0.1\r\n");
   //int old_priority = thread_current()->priority;
 
-  thread_current()->init_priority = new_priority;
+  /*thread_current()->init_priority = new_priority;
 
   printf("beep1\r\n");
   recalculate_priority(thread_current());
   printf("beep2\r\n");
   yield_highest_priority();
-  printf("beep3\r\n");
+  printf("beep3\r\n");*/
   intr_set_level(old_level);
 
 }
