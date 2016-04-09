@@ -738,8 +738,8 @@ void recalculate_priority(struct thread * foo) {
     // Set the new priority
     foo->priority = highest;
 
-    printf("Boop\r\n");
-    
+    //printf("Boop\r\n");
+
     // Resort the ready list since the priority changed
     list_sort(&ready_list, &compare_thread_priority, NULL);
 
