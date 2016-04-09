@@ -654,20 +654,21 @@ bool compare_wakeup_tick(const struct list_elem *a, const struct list_elem *b, v
   const struct thread * thread_a = list_entry(a, struct thread, elem);
   const struct thread * thread_b = list_entry(b, struct thread, elem);
 
-  // Compare each thread's tick count, return true if 
+  // Compare each thread's tick count
   return (thread_a->wakeup_tick < thread_b->wakeup_tick);
 
 }
 
 // Compare method, used by list for sorting Threads based on priority
+// TRUE if A LESS THAN B (a < b)
 bool compare_thread_priority(const struct list_elem *a, const struct list_elem *b, void *aux) {
 
   // Grab a reference to each thread
   const struct thread * thread_a = list_entry(a, struct thread, elem);
   const struct thread * thread_b = list_entry(b, struct thread, elem);
 
-  // Compare each thread's tick count, return true if 
-  return (thread_a->priority >= thread_b->priority);
+  // Compare each thread's priority
+  return (thread_a->priority < thread_b->priority);
 
 }
 
