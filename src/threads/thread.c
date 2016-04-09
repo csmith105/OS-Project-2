@@ -587,6 +587,8 @@ void thread_schedule_tail(struct thread *prev) {
   process_activate();
 #endif
 
+  printf("Switching to thread %s\r\n", cur->name);
+
   // If the thread we switched from is dying, destroy its struct thread. This must happen late so that thread_exit() doesn't pull out the rug under itself.  (We don't free initial_thread because its memory was not obtained via palloc().)
 
   if(prev != NULL && prev->status == THREAD_DYING && prev != initial_thread) {
@@ -616,9 +618,9 @@ static void schedule(void) {
   ASSERT(is_thread(next));
 
   if(cur != next) {
+
     prev = switch_threads(cur, next);
 
-    //printf("Switching from thread %s to %s\r\n", prev->name, next->name);
   }
 
   thread_schedule_tail(prev);
