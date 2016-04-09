@@ -618,7 +618,7 @@ static void schedule(void) {
   if(cur != next) {
     prev = switch_threads(cur, next);
 
-    printf("Switching from thread %s to %s\r\n", prev->name, next->name);
+    //printf("Switching from thread %s to %s\r\n", prev->name, next->name);
   }
 
   thread_schedule_tail(prev);
