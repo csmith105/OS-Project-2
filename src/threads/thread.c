@@ -736,6 +736,7 @@ void recalculate_priority(struct thread * foo) {
     // Resort the ready list since the priority changed
     list_sort(&ready_list, &compare_thread_priority, NULL);
 
+    printf("Boop\r\n");
     // This threads priority changed, propegate the change to all donations
     struct list_elem *e;
 
