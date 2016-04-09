@@ -126,7 +126,11 @@ void sema_up(struct semaphore *sema) {
   old_level = intr_disable();
 
   if(!list_empty(&sema->waiters)) {
+
+    list_sort(&sema->waiters, (list_less_func *) &compare_thread_priority, NULL);
+
     thread_unblock(list_entry(list_pop_front(&sema->waiters), struct thread, elem));
+    
   }
 
   sema->value++;
@@ -210,6 +214,9 @@ void donation(struct lock * lock) {
         weenie->priDon[i].lock = lock;
         weenie->priDon[i].thread = thread_current();
 
+        // Recalculate priority
+        recalculate_priority(weenie);
+
         found = true;
 
         break;
@@ -221,9 +228,6 @@ void donation(struct lock * lock) {
     if(!found) {
       msg("No slot available in donate()");
     }
-
-    // Recalculate priority
-    recalculate_priority(weenie);
 
 	}
 
