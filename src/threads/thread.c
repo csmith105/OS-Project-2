@@ -385,12 +385,11 @@ void thread_set_priority(int new_priority) {
 
   enum intr_level old_level = intr_disable();
 
-  int old_priority = thread_current()->priority;
+  //int old_priority = thread_current()->priority;
 
-  thread_current()->priority = new_priority;
+  thread_current()->init_priority = new_priority;
 
-  // Resort ready list
-  list_sort(&ready_list, &compare_thread_priority, NULL);
+  recalculate_priority();
 
   yield_highest_priority();
 
