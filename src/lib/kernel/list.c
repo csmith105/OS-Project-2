@@ -410,8 +410,7 @@ void list_sort(struct list *list, list_less_func *less, void *aux) {
   ASSERT (list != NULL);
   ASSERT (less != NULL);
 
-  /* Pass over the list repeatedly, merging adjacent runs of
-     nondecreasing elements, until only one run is left. */
+  // Pass over the list repeatedly, merging adjacent runs of nondecreasing elements, until only one run is left
   do {
 
     struct list_elem *a0;     /* Start of first run. */

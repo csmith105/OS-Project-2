@@ -381,13 +381,10 @@ void thread_foreach(thread_action_func *func, void *aux) {
 // Sets the current thread's priority to NEW_PRIORITY
 void thread_set_priority(int new_priority) {
 
-  printf("beep0\r\n");
   enum intr_level old_level = intr_disable();
-  printf("beep0.1\r\n");
 
   thread_current()->init_priority = new_priority;
 
-  printf("beep1\r\n");
   recalculate_priority(thread_current());
   printf("beepZ\r\n");
   yield_highest_priority();
