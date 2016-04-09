@@ -609,6 +609,8 @@ static void schedule(void) {
 
   struct thread *next = next_thread_to_run();
 
+  printf("Switching from thread %s to %s\r\n", cur->name, next->name);
+
   struct thread *prev = NULL;
 
   ASSERT(intr_get_level() == INTR_OFF);
