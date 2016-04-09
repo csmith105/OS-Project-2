@@ -113,11 +113,19 @@ static void simple_thread_func (void *data_) {
   
   for(i = 0; i < ITER_CNT; i++) {
 
+    // Added
+    printf("Thread %s: Acquiring...\r\n", thread_current()->name);
     lock_acquire(data->lock);
 
+    // Added
+    printf("Thread %s: Acquired.\r\n", thread_current()->name);
     *(*data->op)++ = data->id;
 
+    // Added
+    printf("Thread %s: Releasing...\r\n", thread_current()->name);
     lock_release(data->lock);
+    // Added
+    printf("Thread %s: Released.\r\n", thread_current()->name);
 
     thread_yield();
 
