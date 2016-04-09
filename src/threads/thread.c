@@ -391,9 +391,9 @@ void thread_set_priority(int new_priority) {
 
   printf("beep1\r\n");
   recalculate_priority(thread_current());
-  printf("beep2\r\n");
+  printf("beepZ\r\n");
   yield_highest_priority();
-  printf("beep3\r\n");
+  printf("beepZZ\r\n");
   intr_set_level(old_level);
 
 }
@@ -733,7 +733,7 @@ void recalculate_priority(struct thread * foo) {
 
     // It did, change and resort...
 
-    //printf("Thread %s's priority has changed from %d to %d\r\n", foo->name, foo->priority, highest);
+    printf("Thread %s's priority has changed from %d to %d\r\n", foo->name, foo->priority, highest);
 
     // Set the new priority
     foo->priority = highest;
