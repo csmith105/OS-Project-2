@@ -386,9 +386,7 @@ void thread_set_priority(int new_priority) {
   printf("beep0\r\n");
   enum intr_level old_level = intr_disable();
   printf("beep0.1\r\n");
-  //int old_priority = thread_current()->priority;
 
-  timer_mdelay(2000);
   thread_current()->init_priority = new_priority;
 
   printf("beep1\r\n");
