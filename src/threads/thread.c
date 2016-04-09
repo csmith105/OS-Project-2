@@ -389,10 +389,11 @@ void thread_set_priority(int new_priority) {
 
   thread_current()->init_priority = new_priority;
 
+  msg("beep1");
   recalculate_priority(thread_current());
-
+  msg("beep2");
   yield_highest_priority();
-
+  msg("beep3");
   intr_set_level(old_level);
 
 }
