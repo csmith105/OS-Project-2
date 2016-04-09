@@ -668,7 +668,7 @@ bool compare_thread_priority(const struct list_elem *a, const struct list_elem *
   const struct thread * thread_b = list_entry(b, struct thread, elem);
 
   // Compare each thread's priority
-  return (thread_a->priority < thread_b->priority);
+  return (thread_a->priority >= thread_b->priority);
 
 }
 
