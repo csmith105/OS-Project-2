@@ -204,7 +204,7 @@ void donation(struct lock * lock) {
 
       if(weenie->priDon[i].lock == NULL) {
 
-        //printf("Donating %d from %s to %s\r\n", thread_current()->priority, thread_current()->name, weenie->name);
+        printf("Donating %d from %s to %s\r\n", thread_current()->priority, thread_current()->name, weenie->name);
 
         weenie->priDon[i].priority = thread_current()->priority;
         weenie->priDon[i].lock = lock;
@@ -226,22 +226,6 @@ void donation(struct lock * lock) {
     recalculate_priority(weenie);
 
 	}
-
-  /*int i;
-	for(i = 0; i < weenie->numDon; ++i)
-	{
-    int j;
-		for(j = weenie->numDon-1; j > i; --j)
-		{
-			int pri = 0;
-			if(weenie->priDon[j-1] < weenie->priDon[j])
-			{
-				pri = weenie->priDon[j-1];
-				weenie->priDon[j-1] = weenie->priDon[j];
-				weenie->priDon[j]=pri;
-			}
-		}
-	}*/
 
 	intr_set_level(old_level);
 
