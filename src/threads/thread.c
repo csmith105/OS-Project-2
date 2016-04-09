@@ -294,9 +294,7 @@ const char * thread_name(void) {
   return thread_current()->name;
 }
 
-/* Returns the running thread.
-   This is running_thread() plus a couple of sanity checks.
-   See the big comment at the top of thread.h for details. */
+/* Returns the running thread. This is running_thread() plus a couple of sanity checks. See the big comment at the top of thread.h for details. */
 struct thread * thread_current(void) {
 
   struct thread *t = running_thread();
@@ -588,7 +586,7 @@ void thread_schedule_tail(struct thread *prev) {
   process_activate();
 #endif
 
-  printf("Switching to thread %s\r\n", cur->name);
+  //printf("Switching to thread %s\r\n", cur->name);
 
   // If the thread we switched from is dying, destroy its struct thread. This must happen late so that thread_exit() doesn't pull out the rug under itself.  (We don't free initial_thread because its memory was not obtained via palloc().)
 
