@@ -52,7 +52,7 @@ void test_priority_donate_sema (void) {
   thread_create ("high", PRI_DEFAULT + 5, h_thread_func, &ls);
 
   // Added
-  printf("Main's priority is %d", thread_get_priority())
+  printf("Main's priority is %d", thread_get_priority());
 
   // Added
   msg ("Going up.");
