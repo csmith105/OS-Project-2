@@ -69,8 +69,8 @@ void sema_down(struct semaphore *sema) {
 
   while(sema->value == 0) {
 
-   // list_push_back(&sema->waiters, &thread_current()->elem);
-	list_insert_ordered(&sema->waiters, &thread_current()->elem, (list_less_func *) &compare_thread_priority, NULL);
+    // list_push_back(&sema->waiters, &thread_current()->elem);
+    list_insert_ordered(&sema->waiters, &thread_current()->elem, (list_less_func *) &compare_thread_priority, NULL);
 
     thread_block();
 
@@ -288,27 +288,13 @@ void lock_acquire(struct lock *lock) {
 
   donation(lock);
 
-  /*if(lock->holder != NULL)
-  {
-  	if(lock->holder->priority < thread_current()->priority)
-  	{
-		lock->holder->priorityD.donations[lock->holder->priorityD.curDon] = thread_current()->priority;
-		thread_set_highest_donate(&lock->holder);
-  	}
-  }*/
-
   sema_down(&lock->semaphore);
 
   lock->holder = thread_current();
 
 }
 
-/* Tries to acquires LOCK and returns true if successful or false
-   on failure.  The lock must not already be held by the current
-   thread.
-
-   This function will not sleep, so it may be called within an
-   interrupt handler. */
+// Tries to acquires LOCK and returns true if successful or false on failure. The lock must not already be held by the current thread. This function will not sleep, so it may be called within an interrupt handler
 bool lock_try_acquire(struct lock *lock) {
 
   bool success;

@@ -758,10 +758,6 @@ void recalculate_priority(struct thread * foo) {
         }
 
       }
-
-
-
-
       
     }
 
@@ -770,22 +766,3 @@ void recalculate_priority(struct thread * foo) {
   intr_set_level(old_level);
 
 }
-
-/*
-void thread_donate_priority(int priority) {
-
-	if(thread_current()->priorityD.curDon < thread_current()->priorityD.maxDonate) {
-
-		thread_current()->priorityD.donations[thread_current()->priorityD.curDon] = priority;
-
-		++thread_current()->priorityD.curDon;
-
-		if(thread_current()->priorityD.highestDonation < priority) {
-
-			thread_current()->priorityD.highestDonation = priority;
-
-		}
-
-	}
-}
-*/
