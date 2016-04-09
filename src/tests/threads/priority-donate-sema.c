@@ -39,9 +39,18 @@ test_priority_donate_sema (void)
 
   lock_init (&ls.lock);
   sema_init (&ls.sema, 0);
+
+  // Added
+  msg ("Creating thread L.");
   thread_create ("low", PRI_DEFAULT + 1, l_thread_func, &ls);
+  // Added
+  msg ("Creating thread M.");
   thread_create ("med", PRI_DEFAULT + 3, m_thread_func, &ls);
+  // Added
+  msg ("Creating thread H.");
   thread_create ("high", PRI_DEFAULT + 5, h_thread_func, &ls);
+  // Added
+  msg ("Going up.");
   sema_up (&ls.sema);
   msg ("Main thread finished.");
 }
@@ -62,6 +71,8 @@ l_thread_func (void *ls_)
 static void
 m_thread_func (void *ls_) 
 {
+  // Added
+  msg ("Thread M started.");
   struct lock_and_sema *ls = ls_;
 
   sema_down (&ls->sema);
@@ -71,6 +82,8 @@ m_thread_func (void *ls_)
 static void
 h_thread_func (void *ls_) 
 {
+  // Added
+  msg ("Thread H started.");
   struct lock_and_sema *ls = ls_;
 
   lock_acquire (&ls->lock);
