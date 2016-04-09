@@ -621,6 +621,8 @@ static void schedule(void) {
 
     prev = switch_threads(cur, next);
 
+  } else {
+    msg("ERROR: current == next, thread not switched!");
   }
 
   thread_schedule_tail(prev);
