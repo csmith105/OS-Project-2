@@ -70,7 +70,6 @@ void test_priority_fifo(void) {
 
     thread_create(name, PRI_DEFAULT + 1, simple_thread_func, d);
 
-
     // Added
     printf(" complete.\r\n");
 
@@ -111,6 +110,9 @@ void test_priority_fifo(void) {
 }
 
 static void simple_thread_func (void *data_) {
+
+  // Added
+  printf("Thread %s: Started.\r\n", thread_current()->name)
 
   struct simple_thread_data *data = data_;
   int i;
