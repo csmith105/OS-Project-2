@@ -72,7 +72,7 @@ void test_priority_fifo(void) {
 
 
     // Added
-    printf(" complete.");
+    printf(" complete.\r\n");
 
   }
 
