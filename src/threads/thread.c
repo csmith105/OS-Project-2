@@ -386,9 +386,9 @@ void thread_set_priority(int new_priority) {
   thread_current()->init_priority = new_priority;
 
   recalculate_priority(thread_current());
-  printf("beepZ\r\n");
+  
   yield_highest_priority();
-  printf("beepZZ\r\n");
+  
   intr_set_level(old_level);
 
 }
@@ -617,8 +617,6 @@ static void schedule(void) {
 
     prev = switch_threads(cur, next);
 
-  } else {
-    msg("ERROR: current == next, thread not switched!");
   }
 
   thread_schedule_tail(prev);
@@ -728,7 +726,7 @@ void recalculate_priority(struct thread * foo) {
 
     // It did, change and resort...
 
-    printf("Thread %s's priority has changed from %d to %d\r\n", foo->name, foo->priority, highest);
+    //printf("Thread %s's priority has changed from %d to %d\r\n", foo->name, foo->priority, highest);
 
     // Set the new priority
     foo->priority = highest;
@@ -736,7 +734,6 @@ void recalculate_priority(struct thread * foo) {
     // Resort the ready list since the priority changed
     list_sort(&ready_list, &compare_thread_priority, NULL);
 
-    printf("Boop\r\n");
     // This threads priority changed, propegate the change to all donations
     struct list_elem *e;
 
