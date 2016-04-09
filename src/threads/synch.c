@@ -130,7 +130,7 @@ void sema_up(struct semaphore *sema) {
     list_sort(&sema->waiters, (list_less_func *) &compare_thread_priority, NULL);
 
     thread_unblock(list_entry(list_pop_front(&sema->waiters), struct thread, elem));
-    
+
   }
 
   sema->value++;
@@ -208,7 +208,7 @@ void donation(struct lock * lock) {
 
       if(weenie->priDon[i].lock == NULL) {
 
-        printf("Donating %d from %s to %s\r\n", thread_current()->priority, thread_current()->name, weenie->name);
+        //printf("Donating %d from %s to %s\r\n", thread_current()->priority, thread_current()->name, weenie->name);
 
         weenie->priDon[i].priority = thread_current()->priority;
         weenie->priDon[i].lock = lock;
