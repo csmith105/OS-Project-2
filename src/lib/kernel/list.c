@@ -403,6 +403,8 @@ inplace_merge (struct list_elem *a0, struct list_elem *a1b0,
    O(1) space in the number of elements in LIST. */
 void list_sort(struct list *list, list_less_func *less, void *aux) {
 
+  printf("Sorting list...\r\n");
+
   size_t output_run_cnt;        /* Number of runs output in current pass. */
 
   ASSERT (list != NULL);
@@ -410,32 +412,40 @@ void list_sort(struct list *list, list_less_func *less, void *aux) {
 
   /* Pass over the list repeatedly, merging adjacent runs of
      nondecreasing elements, until only one run is left. */
-  do
-    {
-      struct list_elem *a0;     /* Start of first run. */
-      struct list_elem *a1b0;   /* End of first run, start of second. */
-      struct list_elem *b1;     /* End of second run. */
+  do {
 
-      output_run_cnt = 0;
-      for (a0 = list_begin (list); a0 != list_end (list); a0 = b1)
-        {
-          /* Each iteration produces one output run. */
-          output_run_cnt++;
+    struct list_elem *a0;     /* Start of first run. */
+    struct list_elem *a1b0;   /* End of first run, start of second. */
+    struct list_elem *b1;     /* End of second run. */
 
-          /* Locate two adjacent runs of nondecreasing elements
-             A0...A1B0 and A1B0...B1. */
-          a1b0 = find_end_of_run (a0, list_end (list), less, aux);
-          if (a1b0 == list_end (list))
-            break;
-          b1 = find_end_of_run (a1b0, list_end (list), less, aux);
+    printf("Outer...\r\n");
 
-          /* Merge the runs. */
-          inplace_merge (a0, a1b0, b1, less, aux);
-        }
+    output_run_cnt = 0;
+    for(a0 = list_begin (list); a0 != list_end (list); a0 = b1) {
+
+      printf("Innter...\r\n");
+
+      // Each iteration produces one output run
+      output_run_cnt++;
+
+      // Locate two adjacent runs of nondecreasing elements A0...A1B0 and A1B0...B1
+      a1b0 = find_end_of_run (a0, list_end (list), less, aux);
+
+      if(a1b0 == list_end (list)) {
+        break;
+      }
+
+      b1 = find_end_of_run (a1b0, list_end (list), less, aux);
+
+      /* Merge the runs. */
+      inplace_merge (a0, a1b0, b1, less, aux);
+
     }
-  while (output_run_cnt > 1);
 
-  ASSERT (is_sorted (list_begin (list), list_end (list), less, aux));
+  } while(output_run_cnt > 1);
+
+  ASSERT(is_sorted(list_begin(list), list_end(list), less, aux));
+
 }
 
 /* Inserts ELEM in the proper position in LIST, which must be
