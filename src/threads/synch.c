@@ -69,6 +69,10 @@ void sema_down(struct semaphore *sema) {
 
   while(sema->value == 0) {
 
+    if (!thread_mlfqs) {
+      donation();
+    }
+
     // list_push_back(&sema->waiters, &thread_current()->elem);
     list_insert_ordered(&sema->waiters, &thread_current()->elem, (list_less_func *) &compare_thread_priority, NULL);
 
