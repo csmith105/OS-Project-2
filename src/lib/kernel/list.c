@@ -403,7 +403,7 @@ inplace_merge (struct list_elem *a0, struct list_elem *a1b0,
    O(1) space in the number of elements in LIST. */
 void list_sort(struct list *list, list_less_func *less, void *aux) {
 
-  printf("Sorting list...\r\n");
+  //printf("Sorting list...\r\n");
 
   size_t output_run_cnt;        /* Number of runs output in current pass. */
 
@@ -418,12 +418,12 @@ void list_sort(struct list *list, list_less_func *less, void *aux) {
     struct list_elem *a1b0;   /* End of first run, start of second. */
     struct list_elem *b1;     /* End of second run. */
 
-    printf("Outer...\r\n");
+    //printf("Outer...\r\n");
 
     output_run_cnt = 0;
     for(a0 = list_begin (list); a0 != list_end (list); a0 = b1) {
 
-      printf("Innter...\r\n");
+      //printf("Innter...\r\n");
 
       // Each iteration produces one output run
       output_run_cnt++;
