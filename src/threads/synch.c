@@ -141,7 +141,7 @@ void sema_up(struct semaphore *sema) {
 
 }
 
-static void sema_test_helper (void *sema_);
+static void sema_test_helper(void *sema_);
 
 /* Self-test for semaphores that makes control "ping-pong"
    between a pair of threads.  Insert calls to printf() to see
@@ -334,31 +334,6 @@ void lock_release(struct lock *lock) {
 
   }
 
-  /*if(thread_current()->priority != thread_current()->init_priority) {
-
-		if(thread_current()->numDon > 0) {
-
-			thread_current()->priority = thread_current()->priDon[1];
-
-      int i;
-			for(i = 0; i < thread_current()->numDon; ++i) {
-				thread_current()->priDon[i] = thread_current()->priDon[i+1];	
-			}
-
-			thread_current()->numDon-=1;
-		}
-		else if(thread_current()->numDon == 0 && thread_current()->priDon[0] != -1)
-		{
-			thread_current()->priority = thread_current()->priDon[0];
-			thread_current()->priDon[0]=-1;
-		}
-		else
-		{
-			thread_current()->priority = thread_current()->init_priority;
-  	}
-
-  }*/
-
   lock->holder = NULL;
   intr_set_level(old_level);
   sema_up(&lock->semaphore);
@@ -394,7 +369,7 @@ struct semaphore_elem {
    code to receive the signal and act upon it. */
 void cond_init(struct condition *cond) {
 
-  ASSERT (cond != NULL);
+  ASSERT(cond != NULL);
 
   list_init(&cond->waiters);
 
@@ -430,13 +405,14 @@ void cond_wait(struct condition *cond, struct lock *lock) {
   ASSERT(lock_held_by_current_thread(lock));
   
   sema_init(&waiter.semaphore, 0);
-
-  list_push_back(&cond->waiters, &waiter.elem);
-
+  
+  //list_push_back(&cond->waiters, &waiter.elem);
+  list_insert_ordered(&cond->waiters, &waiter.elem, (list_less_func *) &compare_thread_priority, NULL);
+  
   lock_release(lock);
-
+  
   sema_down(&waiter.semaphore);
-
+  
   lock_acquire(lock);
 
 }
