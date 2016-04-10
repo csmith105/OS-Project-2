@@ -62,8 +62,8 @@ bool compare_condvar_priority(const struct list_elem *a, const struct list_elem 
     return false;
   }
 
-  list_sort(&sema_a->semaphore.waiters, (list_less_func *) &compare_thread_priority, NULL);
-  list_sort(&sema_b->semaphore.waiters, (list_less_func *) &compare_thread_priority, NULL);
+  list_sort(&sema_elem_a->semaphore.waiters, (list_less_func *) &compare_thread_priority, NULL);
+  list_sort(&sema_elem_b->semaphore.waiters, (list_less_func *) &compare_thread_priority, NULL);
 
   const struct thread *thread_a = list_entry(list_front(&sema_elem_a->semaphore.waiters), struct thread, elem);
   const struct thread *thread_b = list_entry(list_front(&sema_elem_b->semaphore.waiters), struct thread, elem);
