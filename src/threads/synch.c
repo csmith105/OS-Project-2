@@ -51,6 +51,27 @@ void sema_init(struct semaphore *sema, unsigned value) {
 
 }
 
+bool compare_condvar_priority(const struct list_elem *a, const struct list_elem *b, void *aux UNUSED) {
+
+  struct semaphore_elem *sema_a = list_entry(a, struct semaphore_elem, elem);
+  struct semaphore_elem *sema_b = list_entry(b, struct semaphore_elem, elem);
+
+  if(list_empty(&sema_b->semaphore.waiters)) {
+    return true;
+  } else if(list_empty(&sema_a->semaphore.waiters)) {
+    return false;
+  }
+
+  list_sort(&sema_a->semaphore.waiters, (list_less_func *) &compare_thread_priority, NULL);
+  list_sort(&sema_b->semaphore.waiters, (list_less_func *) &compare_thread_priority, NULL);
+
+  const struct thread *thread_a = list_entry(list_front(&sa->semaphore.waiters), struct thread, elem);
+  const struct thread *thread_b = list_entry(list_front(&sb->semaphore.waiters), struct thread, elem);
+
+  return (thread_a->priority > thread_b->priority);
+
+}
+
 /* Down or "P" operation on a semaphore.  Waits for SEMA's value
    to become positive and then atomically decrements it.
 
@@ -432,9 +453,9 @@ void cond_signal(struct condition *cond, struct lock *lock UNUSED) {
   ASSERT(lock_held_by_current_thread(lock));
 
   if(!list_empty (&cond->waiters)) {
-    
+
     list_sort(&cond->waiters, (list_less_func *) &compare_condvar_priority, NULL);
-    
+
     sema_up(&list_entry(list_pop_front(&cond->waiters), struct semaphore_elem, elem)->semaphore);
 
   }
@@ -461,26 +482,7 @@ void cond_broadcast(struct condition *cond, struct lock *lock) {
 // Additional Project 1 methods
 // ----------------------------
 
-bool compare_condvar_priority(const struct list_elem *a, const struct list_elem *b, void *aux UNUSED) {
 
-  struct semaphore_elem *sema_a = list_entry(a, struct semaphore_elem, elem);
-  struct semaphore_elem *sema_b = list_entry(b, struct semaphore_elem, elem);
-
-  if(list_empty(&sema_b->semaphore.waiters)) {
-    return true;
-  } else if(list_empty(&sema_a->semaphore.waiters)) {
-    return false;
-  }
-
-  list_sort(&sema_a->semaphore.waiters, (list_less_func *) &compare_thread_priority, NULL);
-  list_sort(&sema_b->semaphore.waiters, (list_less_func *) &compare_thread_priority, NULL);
-
-  const struct thread *thread_a = list_entry(list_front(&sa->semaphore.waiters), struct thread, elem);
-  const struct thread *thread_b = list_entry(list_front(&sb->semaphore.waiters), struct thread, elem);
-
-  return (thread_a->priority > thread_b->priority);
-
-}
 
 
 
