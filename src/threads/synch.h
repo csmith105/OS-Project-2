@@ -62,4 +62,9 @@ void cond_broadcast(struct condition *, struct lock *);
    reference guide for more information.*/
 #define barrier() asm volatile ("" : : : "memory")
 
+// Additional Project 1 methods
+// ----------------------------
+
+bool compare_condvar_priority(const struct list_elem *a, const struct list_elem *b, void *aux UNUSED);
+
 #endif /* threads/synch.h */
