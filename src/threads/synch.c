@@ -53,20 +53,20 @@ void sema_init(struct semaphore *sema, unsigned value) {
 
 bool compare_condvar_priority(const struct list_elem *a, const struct list_elem *b, void *aux UNUSED) {
 
-  struct semaphore_elem *sema_a = list_entry(a, struct semaphore_elem, elem);
-  struct semaphore_elem *sema_b = list_entry(b, struct semaphore_elem, elem);
+  struct semaphore_elem * sema_elem_a = list_entry(a, struct semaphore_elem, elem);
+  struct semaphore_elem * sema_elem_b = list_entry(b, struct semaphore_elem, elem);
 
-  if(list_empty(&sema_b->semaphore.waiters)) {
+  if(list_empty(&sema_elem_b->semaphore.waiters)) {
     return true;
-  } else if(list_empty(&sema_a->semaphore.waiters)) {
+  } else if(list_empty(&sema_elem_a->semaphore.waiters)) {
     return false;
   }
 
   list_sort(&sema_a->semaphore.waiters, (list_less_func *) &compare_thread_priority, NULL);
   list_sort(&sema_b->semaphore.waiters, (list_less_func *) &compare_thread_priority, NULL);
 
-  const struct thread *thread_a = list_entry(list_front(&sema_a->semaphore.waiters), struct thread, elem);
-  const struct thread *thread_b = list_entry(list_front(&sema_b->semaphore.waiters), struct thread, elem);
+  const struct thread *thread_a = list_entry(list_front(&sema_elem_a->semaphore.waiters), struct thread, elem);
+  const struct thread *thread_b = list_entry(list_front(&sema_elem_b->semaphore.waiters), struct thread, elem);
 
   return (thread_a->priority > thread_b->priority);
 
