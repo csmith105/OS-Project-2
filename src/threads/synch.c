@@ -51,6 +51,17 @@ void sema_init(struct semaphore *sema, unsigned value) {
 
 }
 
+/* One semaphore in a list. */
+struct semaphore_elem {
+
+  // List element
+  struct list_elem elem;
+
+  // This semaphore       
+  struct semaphore semaphore;
+
+};
+
 bool compare_condvar_priority(const struct list_elem *a, const struct list_elem *b, void *aux UNUSED) {
 
   struct semaphore_elem * sema_elem_a = list_entry(a, struct semaphore_elem, elem);
@@ -373,17 +384,6 @@ bool lock_held_by_current_thread(const struct lock *lock) {
   return lock->holder == thread_current();
 
 }
-
-/* One semaphore in a list. */
-struct semaphore_elem {
-
-  // List element
-  struct list_elem elem;
-
-  // This semaphore       
-  struct semaphore semaphore;
-
-};
 
 /* Initializes condition variable COND.  A condition variable
    allows one piece of code to signal a condition and cooperating
