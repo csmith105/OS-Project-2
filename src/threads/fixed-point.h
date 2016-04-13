@@ -4,9 +4,9 @@
 
 static int f = (1 << 14);
 
-int ConvFP(int n) {
+int ConvFP(int d, int n) {
 
-	return n * f;
+	return ((n * f)/d);
 
 }
 
@@ -34,15 +34,15 @@ int SubFP(int x, int y) {
 
 }
 
-int AddFPtoInt(int n, int x) {
+int AddFPtoInt(int n, int d, int x) {
 
-	return x + ConvFP(n);
+	return x + ConvFP(d, n);
 
 }
 
-int SubFPtoInt(int n, int x) {
+int SubFPtoInt(int n, int d, int x) {
 
-	return x - ConvFP(n);
+	return x - ConvFP(d, n);
 
 }
 
@@ -52,9 +52,9 @@ int MultFP(int x, int y) {
 
 }
 
-int MultFPtoInt(int x, float n) {
+int MultFPtoInt(int x, int n, int d) {
 
-	return x * n;
+	return (x * ConvFP(d, n));
 
 }
 
@@ -64,8 +64,8 @@ int DivFP(int x, int y) {
 
 }
 
-int DivFPtoInt(int x, int n) {
+int DivFPtoInt(int x, int n, int d) {
 
-	return x / n;
+	return (x / ConvFP(d, n));
 
 }

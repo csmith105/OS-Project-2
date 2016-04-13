@@ -4,6 +4,7 @@
 #include <random.h>
 #include <stdio.h>
 #include <string.h>
+#include "threads/fixed-point.h"
 #include "threads/flags.h"
 #include "threads/interrupt.h"
 #include "threads/intr-stubs.h"
@@ -11,6 +12,7 @@
 #include "threads/switch.h"
 #include "threads/synch.h"
 #include "threads/vaddr.h"
+#include "devices/timer.h"
 #ifdef USERPROG
 #include "userprog/process.h"
 #endif
@@ -59,7 +61,8 @@ static long long user_ticks;    /* # of timer ticks in user programs. */
 #define TIME_SLICE 4            /* # of timer ticks to give each thread. */
 
 static unsigned thread_ticks;   /* # of timer ticks since last yield. */
-
+static int load_avg;
+static int recent_cpu;
 /* If false (default), use round-robin scheduler.
    If true, use multi-level feedback queue scheduler.
    Controlled by kernel command-line option "-o mlfqs". */
@@ -75,6 +78,8 @@ static void *alloc_frame(struct thread *, size_t size);
 static void schedule(void);
 void thread_schedule_tail(struct thread *prev);
 static tid_t allocate_tid(void);
+static void calc_thread_load_avg(void);
+static void calc_thread_recent_cpu(void);
 
 /* Initializes the threading system by transforming the code
    that's currently running into a thread.  This can't work in
@@ -103,6 +108,12 @@ void thread_init(void) {
   initial_thread = running_thread();
 
   init_thread(initial_thread, "main", PRI_DEFAULT);
+
+  if(thread_mlfqs)
+  {
+  		thread_create("Load_thread", PRI_MAX, &calc_thread_load_avg, NULL);
+  }
+  
 
   initial_thread->status = THREAD_RUNNING;
 
@@ -204,12 +215,13 @@ tid_t thread_create(const char *name, int priority, thread_func *function, void 
   tid = t->tid = allocate_tid();
 
   int i;
-  for(i = 0; i < 8; ++i) {
-
-    t->priDon[i].priority = PRI_MIN;
-    t->priDon[i].lock = NULL;
-    t->priDon[i].thread = NULL;
-
+  if(!thread_mlfqs)
+  {
+  	for(i = 0; i < 8; ++i) {
+    	t->priDon[i].priority = PRI_MIN;
+    	t->priDon[i].lock = NULL;
+    	t->priDon[i].thread = NULL;
+	}
   }
 
   // Prepare thread for first run by initializing its stack. Do this atomically so intermediate values for the 'stack' member cannot be observed
@@ -399,10 +411,10 @@ int thread_get_priority(void) {
 }
 
 // Sets the current thread's nice value to NICE
-void thread_set_nice(int nice UNUSED) {
-
-  /* Not yet implemented. */
-
+void thread_set_nice(int new_nice) {
+  ASSERT(thread_mlfqs);
+  thread_current()->priority = PRI_MAX - (recent_cpu / 4)-(new_nice*2);
+  thread_current()->nice = new_nice;
 }
 
 // Returns the current thread's nice value
@@ -414,18 +426,18 @@ int thread_get_nice(void) {
 
 // Returns 100 times the system load average
 int thread_get_load_avg(void) {
-
-  /* Not yet implemented. */
-  return 0;
-
+  return load_avg;
 }
 
 // Returns 100 times the current thread's recent_cpu value
 int thread_get_recent_cpu(void) {
-
-  /* Not yet implemented. */
-  return 0;
-
+  /*ASSERT(thread_mlfqs);
+  recent_cpu = (recent_cpu + thread_current()->nice);
+  int lad=((2 * load_avg)/((2*load_avg) + 1));
+  recent_cpu = lad * recent_cpu;
+  return recent_cpu;
+  */
+		return 0;
 }
 
 // Idle thread. Executes when no other thread is ready to run
@@ -766,3 +778,28 @@ void recalculate_priority(struct thread * foo) {
   intr_set_level(old_level);
 
 }
+
+static void calc_thread_load_avg(void)
+{
+	ASSERT(thread_mlfqs);
+	load_avg = 0;
+	for(;;)
+	{
+		if(timer_ticks()%TIMER_FREQ != 0)
+		{
+			timer_sleep((timer_ticks()%10));	
+		}
+		else
+		{
+			int64_t y = MultFPtoInt(load_avg, 59, 60);
+			int64_t x = MultFPtoInt(list_size(&ready_list), 1, 60);
+			x += y;
+			load_avg = FPtoIntN(x);
+		}
+	}
+}
+/*
+static void calc_thread_recent_cpu(void)
+{
+
+}*/
