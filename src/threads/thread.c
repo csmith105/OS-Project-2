@@ -61,7 +61,7 @@ static long long user_ticks;    /* # of timer ticks in user programs. */
 #define TIME_SLICE 4            /* # of timer ticks to give each thread. */
 
 static unsigned thread_ticks;   /* # of timer ticks since last yield. */
-static int load_avg;
+static int load_avg = 0;
 static int recent_cpu;
 /* If false (default), use round-robin scheduler.
    If true, use multi-level feedback queue scheduler.
@@ -109,11 +109,11 @@ void thread_init(void) {
 
   init_thread(initial_thread, "main", PRI_DEFAULT);
 
-  if(thread_mlfqs)
+  /*if(thread_mlfqs)
   {
   		thread_create("Load_thread", PRI_MAX, &calc_thread_load_avg, NULL);
   }
-  
+  */
 
   initial_thread->status = THREAD_RUNNING;
 
@@ -157,6 +157,10 @@ void thread_tick(void) {
 
   else {
     kernel_ticks++;
+  }
+  if(thread_mlfqs && timer_ticks()%TIMER_FREQ == 0)
+  {
+	calc_thread_load_avg();
   }
 
   // Enforce preemption
@@ -426,7 +430,7 @@ int thread_get_nice(void) {
 
 // Returns 100 times the system load average
 int thread_get_load_avg(void) {
-  return load_avg;
+  return FPtoIntN((100*load_avg));
 }
 
 // Returns 100 times the current thread's recent_cpu value
@@ -782,21 +786,7 @@ void recalculate_priority(struct thread * foo) {
 static void calc_thread_load_avg(void)
 {
 	ASSERT(thread_mlfqs);
-	load_avg = 0;
-	for(;;)
-	{
-		if(timer_ticks()%TIMER_FREQ != 0)
-		{
-			timer_sleep((timer_ticks()%10));	
-		}
-		else
-		{
-			int64_t y = MultFPtoInt(load_avg, 59, 60);
-			int64_t x = MultFPtoInt(list_size(&ready_list), 1, 60);
-			x += y;
-			load_avg = FPtoIntN(x);
-		}
-	}
+	load_avg = MultFP(load_avg, DivFPtoInt(ConvFP(59),60)) + MultFPtoInt(list_size(&ready_list), DivFPtoInt(ConvFP(1),60));	
 }
 /*
 static void calc_thread_recent_cpu(void)
