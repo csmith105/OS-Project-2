@@ -109,12 +109,6 @@ void thread_init(void) {
 
   init_thread(initial_thread, "main", PRI_DEFAULT);
 
-  if(thread_mlfqs)
-  {
-  		//thread_create("Load_thread", PRI_MAX, &calc_thread_load_avg, NULL);
-  }
-  
-
   initial_thread->status = THREAD_RUNNING;
 
   initial_thread->tid = allocate_tid();
@@ -854,28 +848,3 @@ void mlfqs() {
   }
 
 }
-
-/*static void calc_thread_load_avg(void)
-{
-	ASSERT(thread_mlfqs);
-	load_avg = 0;
-	for(;;)
-	{
-		if(timer_ticks()%TIMER_FREQ != 0)
-		{
-			timer_sleep((timer_ticks()%10));	
-		}
-		else
-		{
-			int64_t y = MultFPtoInt(load_avg, 59, 60);
-			int64_t x = MultFPtoInt(list_size(&ready_list), 60);
-			x += y;
-			load_avg = FPtoIntN(x);
-		}
-	}
-}*/
-/*
-static void calc_thread_recent_cpu(void)
-{
-
-}*/
