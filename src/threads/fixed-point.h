@@ -2,11 +2,11 @@
 //Created: 03/28/2016 Modified: 03/28/2016
 //Fixed-point.h
 
-static int f = (1 << 14);
+static const int f = (1 << 14);
 
-int ConvFP(int d, int n) {
+int ConvFP(int n) {
 
-	return ((n * f)/d);
+	return n * f;
 
 }
 
@@ -30,19 +30,19 @@ int AddFP(int x, int y) {
 
 int SubFP(int x, int y) {
 
-	return x- y;
+	return x - y;
 
 }
 
-int AddFPtoInt(int n, int d, int x) {
+int AddFPtoInt(int x, int n) {
 
-	return x + ConvFP(d, n);
+	return x + ConvFP(n);
 
 }
 
-int SubFPtoInt(int n, int d, int x) {
+int SubFPtoInt(int x, int n, int d) {
 
-	return x - ConvFP(d, n);
+	return x - ConvFP(n);
 
 }
 
@@ -52,9 +52,9 @@ int MultFP(int x, int y) {
 
 }
 
-int MultFPtoInt(int x, int n, int d) {
+int MultFPtoInt(int x, int n) {
 
-	return (x * ConvFP(d, n));
+	return (x * ConvFP(n));
 
 }
 
@@ -64,8 +64,8 @@ int DivFP(int x, int y) {
 
 }
 
-int DivFPtoInt(int x, int n, int d) {
+int DivFPtoInt(int x, int n) {
 
-	return (x / ConvFP(d, n));
+	return (x / n);
 
 }

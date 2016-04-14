@@ -115,8 +115,9 @@ struct thread {
   //int donatedPriority;
   struct donation priDon[8];
 
-  // Nice
+  // MLFQS stuff
   int nice;
+  int cpu;
 
   // Tick to wake up on
   int64_t wakeup_tick;
@@ -191,6 +192,10 @@ int thread_get_load_avg(void);
 
 // Additional Project 1 methods
 // ----------------------------
+
+void calc_mlfqs_load();
+
+void mlfqs();
 
 bool compare_thread_priority(const struct list_elem *a, const struct list_elem *b, void *aux);
 

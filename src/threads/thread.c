@@ -57,6 +57,8 @@ static long long kernel_ticks;  /* # of timer ticks in kernel threads. */
 
 static long long user_ticks;    /* # of timer ticks in user programs. */
 
+static int load;
+
 /* Scheduling. */
 #define TIME_SLICE 4            /* # of timer ticks to give each thread. */
 
@@ -393,15 +395,19 @@ void thread_foreach(thread_action_func *func, void *aux) {
 // Sets the current thread's priority to NEW_PRIORITY
 void thread_set_priority(int new_priority) {
 
-  enum intr_level old_level = intr_disable();
+  if(!thread_mlfqs) {
 
-  thread_current()->init_priority = new_priority;
+    enum intr_level old_level = intr_disable();
 
-  recalculate_priority(thread_current());
-  
-  yield_highest_priority();
-  
-  intr_set_level(old_level);
+    thread_current()->init_priority = new_priority;
+
+    recalculate_priority(thread_current());
+    
+    yield_highest_priority();
+    
+    intr_set_level(old_level);
+
+  }
 
 }
 
@@ -420,24 +426,39 @@ void thread_set_nice(int new_nice) {
 // Returns the current thread's nice value
 int thread_get_nice(void) {
 
-  return thread_current()->nice;
+  enum intr_level old_level = intr_disable();
+
+  const int nice = thread_current()->nice;
+
+  intr_set_level(old_level);
+
+  return nice;
 
 }
 
 // Returns 100 times the system load average
 int thread_get_load_avg(void) {
-  return load_avg;
+
+  enum intr_level old_level = intr_disable();
+
+  const int ave = FPtoIntN(MultFPtoInt(load, 100));
+
+  intr_set_level(old_level);
+
+  return ave;
 }
 
 // Returns 100 times the current thread's recent_cpu value
 int thread_get_recent_cpu(void) {
-  /*ASSERT(thread_mlfqs);
-  recent_cpu = (recent_cpu + thread_current()->nice);
-  int lad=((2 * load_avg)/((2*load_avg) + 1));
-  recent_cpu = lad * recent_cpu;
-  return recent_cpu;
-  */
-		return 0;
+
+  enum intr_level old_level = intr_disable();
+
+  const int cpu = FPtoIntN(MultFPtoInt(thread_current()->cpu, 100));
+
+  intr_set_level(old_level);
+
+  return cpu;
+
 }
 
 // Idle thread. Executes when no other thread is ready to run
@@ -776,6 +797,50 @@ void recalculate_priority(struct thread * foo) {
   }
 
   intr_set_level(old_level);
+
+}
+
+void recalc_mlfqs_load() {
+
+  int numThreads = (thread_current() != idle_thread) ? list_size(&ready_list) : ++list_size(&ready_list);
+
+  load = AddFP(MultFP(DivFPtoInt(ConvFP(59), 60), load), DivFPtoInt(ConvFP(numThreads), 60));
+
+}
+
+void recalc_mlfqs_priority(struct thread * bob) {
+
+  if(t != idle_thread) {
+
+      // Calculate new priority
+      bob->priority = FPtoIntZ(SubFPtoInt(SubFP(ConvFP(PRI_MAX), DivFPtoInt(bob->recent_cpu, 4)), MultFPtoInt(bob->nice, 2)));
+
+      // Clamp
+      bob->priority = (bob->priority < PRI_MIN) ? PRI_MIN : (bob->priority > PRI_MAX) ? PRI_MAX : bob->priority;
+
+  }
+
+}
+
+void mlfqs() {
+
+  struct list_elem * elem;
+
+  for(elem = list_begin(&all_list); elem != list_end(&all_list); elem = list_next(elem)) {
+
+    const struct thread * bob = list_entry(elem, struct thread, allelem);
+
+    if(bob != idle_thread) {
+
+      // Calculate recent CPU time
+      const int a = MultFPtoInt(load_avg, 2);
+      bob->cpu = AddFPtoInt(MultFP(DivFP(a, AddFPtoInt(a, 1)), bob->recent_cpu), t->nice);
+
+      recalc_mlfqs_priority(bob);
+
+    }
+
+  }
 
 }
 
