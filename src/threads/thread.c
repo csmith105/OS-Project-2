@@ -810,7 +810,7 @@ void recalc_mlfqs_load() {
 
 void recalc_mlfqs_priority(struct thread * bob) {
 
-  if(t != idle_thread) {
+  if(bob != idle_thread) {
 
       // Calculate new priority
       bob->priority = FPtoIntZ(SubFPtoInt(SubFP(ConvFP(PRI_MAX), DivFPtoInt(bob->recent_cpu, 4)), MultFPtoInt(bob->nice, 2)));
