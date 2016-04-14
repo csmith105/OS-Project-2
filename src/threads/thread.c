@@ -418,9 +418,19 @@ int thread_get_priority(void) {
 
 // Sets the current thread's nice value to NICE
 void thread_set_nice(int new_nice) {
+
   ASSERT(thread_mlfqs);
-  thread_current()->priority = PRI_MAX - (recent_cpu / 4)-(new_nice*2);
+
+  enum intr_level old_level = intr_disable();
+
   thread_current()->nice = new_nice;
+
+  recalc_mlfqs_priority(thread_current());
+
+  yield_highest_priority();
+
+  intr_set_level(old_level);
+
 }
 
 // Returns the current thread's nice value
@@ -813,7 +823,7 @@ void recalc_mlfqs_priority(struct thread * bob) {
   if(bob != idle_thread) {
 
       // Calculate new priority
-      bob->priority = FPtoIntZ(SubFPtoInt(SubFP(ConvFP(PRI_MAX), DivFPtoInt(bob->recent_cpu, 4)), MultFPtoInt(bob->nice, 2)));
+      bob->priority = FPtoIntZ(SubFPtoInt(SubFP(ConvFP(PRI_MAX), DivFPtoInt(bob->cpu, 4)), MultFPtoInt(bob->nice, 2)));
 
       // Clamp
       bob->priority = (bob->priority < PRI_MIN) ? PRI_MIN : (bob->priority > PRI_MAX) ? PRI_MAX : bob->priority;
