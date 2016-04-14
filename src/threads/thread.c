@@ -113,7 +113,7 @@ void thread_init(void) {
 
   if(thread_mlfqs)
   {
-  		thread_create("Load_thread", PRI_MAX, &calc_thread_load_avg, NULL);
+  		//thread_create("Load_thread", PRI_MAX, &calc_thread_load_avg, NULL);
   }
   
 
