@@ -196,16 +196,18 @@ int thread_get_load_avg(void);
 // Additional Project 1 methods
 // ----------------------------
 
-void calc_mlfqs_load();
-
-void mlfqs();
-
 bool compare_thread_priority(const struct list_elem *a, const struct list_elem *b, void *aux);
 
 bool compare_wakeup_tick(const struct list_elem *a, const struct list_elem *b, void *aux);
 
+void yield_highest_priority();
+
 void recalculate_priority(struct thread * foo);
 
-void yield_highest_priority();
+void recalc_mlfqs_load();
+
+void recalc_mlfqs_priority(struct thread * bob);
+
+void mlfqs();
 
 #endif /* threads/thread.h */
