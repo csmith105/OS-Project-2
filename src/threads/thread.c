@@ -63,8 +63,8 @@ static int load;
 #define TIME_SLICE 4            /* # of timer ticks to give each thread. */
 
 static unsigned thread_ticks;   /* # of timer ticks since last yield. */
-static int load_avg;
-static int recent_cpu;
+static int load;
+static int r_cpu;
 /* If false (default), use round-robin scheduler.
    If true, use multi-level feedback queue scheduler.
    Controlled by kernel command-line option "-o mlfqs". */
