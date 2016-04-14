@@ -828,12 +828,13 @@ void mlfqs() {
 
   for(elem = list_begin(&all_list); elem != list_end(&all_list); elem = list_next(elem)) {
 
-    const struct thread * bob = list_entry(elem, struct thread, allelem);
+    struct thread * bob = list_entry(elem, struct thread, allelem);
 
     if(bob != idle_thread) {
 
       // Calculate recent CPU time
       const int a = MultFPtoInt(load, 2);
+
       bob->cpu = AddFPtoInt(MultFP(DivFP(a, AddFPtoInt(a, 1)), bob->cpu), bob->nice);
 
       recalc_mlfqs_priority(bob);
