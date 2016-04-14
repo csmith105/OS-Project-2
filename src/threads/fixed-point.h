@@ -4,6 +4,18 @@
 
 static const int f = (1 << 14);
 
+int ConvFP(int);
+int FPtoIntZ(int);
+int FPtoIntN(int);
+int AddFP(int, int);
+int SubFP(int, int);
+int AddFPtoInt(int, int);
+int SubFPtoInt(int, int);
+int MultFP(int, int);
+int MultFPtoInt(int, int);
+int DivFP(int, int);
+int DivFPtoInt(int, int);
+
 int ConvFP(int n) {
 
 	return n * f;
@@ -40,7 +52,7 @@ int AddFPtoInt(int x, int n) {
 
 }
 
-int SubFPtoInt(int x, int n, int d) {
+int SubFPtoInt(int x, int n) {
 
 	return x - ConvFP(n);
 

@@ -833,8 +833,8 @@ void mlfqs() {
     if(bob != idle_thread) {
 
       // Calculate recent CPU time
-      const int a = MultFPtoInt(load_avg, 2);
-      bob->cpu = AddFPtoInt(MultFP(DivFP(a, AddFPtoInt(a, 1)), bob->recent_cpu), t->nice);
+      const int a = MultFPtoInt(load, 2);
+      bob->cpu = AddFPtoInt(MultFP(DivFP(a, AddFPtoInt(a, 1)), bob->cpu), bob->nice);
 
       recalc_mlfqs_priority(bob);
 
@@ -844,7 +844,7 @@ void mlfqs() {
 
 }
 
-static void calc_thread_load_avg(void)
+/*static void calc_thread_load_avg(void)
 {
 	ASSERT(thread_mlfqs);
 	load_avg = 0;
@@ -857,12 +857,12 @@ static void calc_thread_load_avg(void)
 		else
 		{
 			int64_t y = MultFPtoInt(load_avg, 59, 60);
-			int64_t x = MultFPtoInt(list_size(&ready_list), 1, 60);
+			int64_t x = MultFPtoInt(list_size(&ready_list), 60);
 			x += y;
 			load_avg = FPtoIntN(x);
 		}
 	}
-}
+}*/
 /*
 static void calc_thread_recent_cpu(void)
 {
