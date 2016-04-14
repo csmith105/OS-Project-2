@@ -66,7 +66,7 @@ int MultFP(int x, int y) {
 
 int MultFPtoInt(int x, int n) {
 
-	return (x * ConvFP(n));
+	return (x * n);
 
 }
 
