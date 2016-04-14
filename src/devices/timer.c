@@ -190,7 +190,7 @@ static void timer_interrupt(struct intr_frame *args UNUSED) {
 
     }
 
-    if(!(ticks % TIMER_FREQ)) {
+    if(!(ticks % 100)) {
 
       recalc_mlfqs_load();
 
