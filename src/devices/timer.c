@@ -182,17 +182,19 @@ static void timer_interrupt(struct intr_frame *args UNUSED) {
       // Increment CPU
       thread_current()->cpu = AddFPtoInt(thread_current()->cpu, 1);
 
-      if(!(ticks % 4)) {
-        recalc_mlfqs_priority(thread_current());
-      }
+    }
 
-      if(!(ticks % TIMER_FREQ)) {
+    if(!(ticks % 4)) {
 
-        recalc_mlfqs_load();
+      recalc_mlfqs_priority(thread_current());
 
-        mlfqs();
+    }
 
-      }
+    if(!(ticks % TIMER_FREQ)) {
+
+      recalc_mlfqs_load();
+
+      mlfqs();
 
     }
 
