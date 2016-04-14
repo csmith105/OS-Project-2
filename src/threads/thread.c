@@ -812,7 +812,7 @@ void recalculate_priority(struct thread * foo) {
 
 void recalc_mlfqs_load() {
 
-  int numThreads = (thread_current() != idle_thread) ? list_size(&ready_list) : ++list_size(&ready_list);
+  int numThreads = (thread_current() != idle_thread) ? list_size(&ready_list) : list_size(&ready_list) + 1;
 
   load = AddFP(MultFP(DivFPtoInt(ConvFP(59), 60), load), DivFPtoInt(ConvFP(numThreads), 60));
 
