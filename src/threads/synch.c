@@ -219,15 +219,11 @@ static void sema_test_helper(void *sema_) {
 
 void donation(struct lock * lock) {
 
-  if(!thread_mlfqs) {
+  if(!thread_mlfqs || !lock->holder == NULL) {
 
     ASSERT(lock != NULL);
     ASSERT(!intr_context());
     ASSERT(!lock_held_by_current_thread(lock));
-
-    if(lock->holder == NULL) {
-      return;
-    }
 
     enum intr_level old_level = intr_disable();
 
@@ -348,9 +344,9 @@ void lock_release(struct lock *lock) {
   ASSERT(lock != NULL);
   ASSERT(lock_held_by_current_thread(lock));
 
-  if(!thread_mlfqs) {
+  enum intr_level old_level = intr_disable();
 
-    enum intr_level old_level = intr_disable();
+  if(!thread_mlfqs) {
 
     struct thread * foo = thread_current();
 
@@ -372,10 +368,10 @@ void lock_release(struct lock *lock) {
 
     }
 
-    lock->holder = NULL;
-    intr_set_level(old_level);
-
   }
+
+  lock->holder = NULL;
+  intr_set_level(old_level);
   
   sema_up(&lock->semaphore);
 
@@ -487,11 +483,4 @@ void cond_broadcast(struct condition *cond, struct lock *lock) {
   }
 
 }
-
-// Additional Project 1 methods
-// ----------------------------
-
-
-
-
 
