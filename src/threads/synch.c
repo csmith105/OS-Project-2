@@ -219,7 +219,7 @@ static void sema_test_helper(void *sema_) {
 
 void donation(struct lock * lock) {
 
-  if(!thread_mlfqs || !lock->holder == NULL) {
+  if(!thread_mlfqs && !lock->holder == NULL) {
 
     ASSERT(lock != NULL);
     ASSERT(!intr_context());
