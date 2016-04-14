@@ -812,8 +812,8 @@ void recalc_mlfqs_load() {
 
   const int numThreads = (thread_current() == idle_thread) ? list_size(&ready_list) : list_size(&ready_list) + 1;
 
-  printf("%d", thread_get_load_avg());
-  
+  //printf("%d", thread_get_load_avg());
+
   load = AddFP(MultFP(DivFPtoInt(ConvFP(59), 60), load), DivFPtoInt(ConvFP(numThreads), 60));
 
 }

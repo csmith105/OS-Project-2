@@ -31,10 +31,6 @@ test_mlfqs_load_1 (void)
       load_avg = thread_get_load_avg ();
       ASSERT (load_avg >= 0);
       elapsed = timer_elapsed (start_time) / TIMER_FREQ;
-
-      // Added
-      printf("%d seconds, %d\r\n", elapsed, load_avg);
-
       if (load_avg > 100)
         fail ("load average is %d.%02d "
               "but should be between 0 and 1 (after %d seconds)",
