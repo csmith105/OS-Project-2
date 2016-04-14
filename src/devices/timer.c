@@ -180,7 +180,7 @@ static void timer_interrupt(struct intr_frame *args UNUSED) {
     if(thread_current() != idle_thread) {
 
       // Increment CPU
-      thread_current()->cpu = AddFPtoInt(thread_current()->recent_cpu, 1);
+      thread_current()->cpu = AddFPtoInt(thread_current()->cpu, 1);
 
       if(!(ticks % RECALC_FREQ)) {
         recalc_mlfqs_priority(thread_current());
