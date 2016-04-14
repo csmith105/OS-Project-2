@@ -30,9 +30,6 @@ static struct list ready_list;
    when they are first scheduled and removed when they exit. */
 static struct list all_list;
 
-/* Idle thread. */
-static struct thread *idle_thread;
-
 /* Initial thread, the thread running init.c:main(). */
 static struct thread *initial_thread;
 
@@ -65,6 +62,7 @@ static int load;
 static unsigned thread_ticks;   /* # of timer ticks since last yield. */
 static int load;
 static int r_cpu;
+
 /* If false (default), use round-robin scheduler.
    If true, use multi-level feedback queue scheduler.
    Controlled by kernel command-line option "-o mlfqs". */
