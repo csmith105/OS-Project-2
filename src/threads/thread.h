@@ -23,6 +23,9 @@ typedef int tid_t;
 #define PRI_DEFAULT 31                  /* Default priority. */
 #define PRI_MAX 63                      /* Highest priority. */
 
+/* Idle thread. */
+struct thread *idle_thread;
+
 /* A kernel thread or user process.
 
    Each thread structure is stored in its own 4 kB page.  The
@@ -115,8 +118,9 @@ struct thread {
   //int donatedPriority;
   struct donation priDon[8];
 
-  // Nice
+  // MLFQS stuff
   int nice;
+  int cpu;
 
   // Tick to wake up on
   int64_t wakeup_tick;
@@ -196,8 +200,14 @@ bool compare_thread_priority(const struct list_elem *a, const struct list_elem *
 
 bool compare_wakeup_tick(const struct list_elem *a, const struct list_elem *b, void *aux);
 
+void yield_highest_priority();
+
 void recalculate_priority(struct thread * foo);
 
-void yield_highest_priority();
+void recalc_mlfqs_load();
+
+void recalc_mlfqs_priority(struct thread * bob);
+
+void mlfqs();
 
 #endif /* threads/thread.h */

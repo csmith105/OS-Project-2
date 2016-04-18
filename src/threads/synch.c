@@ -219,53 +219,53 @@ static void sema_test_helper(void *sema_) {
 
 void donation(struct lock * lock) {
 
-	ASSERT(lock != NULL);
-	ASSERT(!intr_context());
-	ASSERT(!lock_held_by_current_thread(lock));
+  if(!thread_mlfqs && !lock->holder == NULL) {
 
-	if(lock->holder == NULL) {
-		return;
-	}
+    ASSERT(lock != NULL);
+    ASSERT(!intr_context());
+    ASSERT(!lock_held_by_current_thread(lock));
 
-	enum intr_level old_level = intr_disable();
+    enum intr_level old_level = intr_disable();
 
-	struct thread *weenie = lock->holder;
+    struct thread *weenie = lock->holder;
 
-	if(weenie->priority < thread_current()->priority) {
+    if(weenie->priority < thread_current()->priority) {
 
-    // We need to donate
+      // We need to donate
 
-    // Add the new donation record
-    bool found = false;
-    int i;
-    for(i = 0; i < 8; ++i) {
+      // Add the new donation record
+      bool found = false;
+      int i;
+      for(i = 0; i < 8; ++i) {
 
-      if(weenie->priDon[i].lock == NULL) {
+        if(weenie->priDon[i].lock == NULL) {
 
-        //printf("Donating %d from %s to %s\r\n", thread_current()->priority, thread_current()->name, weenie->name);
+          //printf("Donating %d from %s to %s\r\n", thread_current()->priority, thread_current()->name, weenie->name);
 
-        weenie->priDon[i].priority = thread_current()->priority;
-        weenie->priDon[i].lock = lock;
-        weenie->priDon[i].thread = thread_current();
+          weenie->priDon[i].priority = thread_current()->priority;
+          weenie->priDon[i].lock = lock;
+          weenie->priDon[i].thread = thread_current();
 
-        // Recalculate priority
-        recalculate_priority(weenie);
+          // Recalculate priority
+          recalculate_priority(weenie);
 
-        found = true;
+          found = true;
 
-        break;
+          break;
 
+        }
+
+      }
+
+      if(!found) {
+        msg("No slot available in donate()");
       }
 
     }
 
-    if(!found) {
-      msg("No slot available in donate()");
-    }
+    intr_set_level(old_level);
 
-	}
-
-	intr_set_level(old_level);
+  }
 
 }
 
@@ -346,21 +346,25 @@ void lock_release(struct lock *lock) {
 
   enum intr_level old_level = intr_disable();
 
-  struct thread * foo = thread_current();
+  if(!thread_mlfqs) {
 
-  int i;
+    struct thread * foo = thread_current();
 
-  for(i = 0; i < 8; ++i) {
+    int i;
 
-    if(foo->priDon[i].lock == lock) {
+    for(i = 0; i < 8; ++i) {
 
-      // Must remove record
-      foo->priDon[i].lock = NULL;
-      foo->priDon[i].thread = NULL;
-      foo->priDon[i].priority = PRI_MIN;
+      if(foo->priDon[i].lock == lock) {
 
-      // Recalculate foo's priority
-      recalculate_priority(foo);
+        // Must remove record
+        foo->priDon[i].lock = NULL;
+        foo->priDon[i].thread = NULL;
+        foo->priDon[i].priority = PRI_MIN;
+
+        // Recalculate foo's priority
+        recalculate_priority(foo);
+
+      }
 
     }
 
@@ -368,6 +372,7 @@ void lock_release(struct lock *lock) {
 
   lock->holder = NULL;
   intr_set_level(old_level);
+  
   sema_up(&lock->semaphore);
 
   yield_highest_priority();
@@ -478,11 +483,4 @@ void cond_broadcast(struct condition *cond, struct lock *lock) {
   }
 
 }
-
-// Additional Project 1 methods
-// ----------------------------
-
-
-
-
 

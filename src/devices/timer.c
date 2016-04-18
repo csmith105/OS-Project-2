@@ -175,6 +175,33 @@ static void timer_interrupt(struct intr_frame *args UNUSED) {
 
   thread_tick();
 
+  if(thread_mlfqs) {
+
+    if(thread_current() != idle_thread) {
+
+      // Increment CPU
+      thread_current()->cpu = AddFPtoInt(thread_current()->cpu, 1);
+
+    }
+
+    if(!(ticks % 4)) {
+
+      recalc_mlfqs_priority(thread_current());
+
+    }
+
+    if(!(ticks % 100)) {
+
+      recalc_mlfqs_load();
+
+      mlfqs();
+
+    }
+
+  }
+
+  // Handle sleeping threads
+
   struct list_elem * element = list_begin(&sleeping_threads);
 
   while(element != list_end(&sleeping_threads)) {
